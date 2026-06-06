@@ -27,7 +27,7 @@ The Phase 0 "spine" must prove the toolchain coheres before any feature work, be
 | TanStack Query | 5.x | Server/SDK state |
 | TanStack Router | 1.x | Routing; majors do not align with Query by design |
 | Zod | 4.x | 14x faster than v3; `zod/v4` subpath allows incremental migration if a dep still needs v3 |
-| Zustand | 5.x | Context/Workspace/UI state (added in Phase 3) |
+| Zustand | 5.x | Session state (Phase 1); Context/Workspace state (Phase 3) |
 
 **Versions actually resolved in the Phase 0 spike (mid-2026):** pnpm 11.5.2, Turborepo 2.9.16, React/React-DOM 19.2.7, Vite 7.3.5, @vitejs/plugin-react 5.2.0, Tailwind CSS + @tailwindcss/vite 4.3.0, TanStack Query 5.101.0, TanStack Router 1.170.11, Zod 4.4.3.
 
