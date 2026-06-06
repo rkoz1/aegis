@@ -4,6 +4,7 @@ import { useSession } from "@aegis/platform-session";
 import { registry } from "../registry";
 import { PersonaSwitcher } from "../persona-switcher";
 import { GlobalSearch } from "../global-search";
+import { ContextChip } from "../context-chip";
 
 const linkBase =
   "block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground";
@@ -21,6 +22,9 @@ export function RootLayout() {
       <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card px-4">
         <span className="text-lg font-semibold">Aegis</span>
         <GlobalSearch />
+        <div className="ml-auto">
+          <ContextChip />
+        </div>
       </header>
 
       <div className="flex flex-1">

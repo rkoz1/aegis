@@ -1,5 +1,6 @@
 import { usePortfolios } from "@aegis/sdk-portfolios";
 import { cn } from "@aegis/platform-ui";
+import { useContextOfType, ContextTypes } from "@aegis/platform-context";
 
 /** A mock mandate check: large books are flagged for review. */
 function mandateStatus(holdingsCount: number): { label: string; ok: boolean } {
@@ -14,6 +15,7 @@ function mandateStatus(holdingsCount: number): { label: string; ok: boolean } {
  */
 export function ComplianceChecks() {
   const { data, isLoading, isError } = usePortfolios();
+  const selected = useContextOfType(ContextTypes.portfolio);
 
   return (
     <section className="space-y-4">
@@ -30,8 +32,15 @@ export function ComplianceChecks() {
       <ul className="divide-y divide-border rounded-lg border border-border bg-card">
         {data?.map((p) => {
           const status = mandateStatus(p.holdingsCount);
+          const isSelected = selected?.id === p.id;
           return (
-            <li key={p.id} className="flex items-center justify-between p-4">
+            <li
+              key={p.id}
+              className={cn(
+                "flex items-center justify-between p-4",
+                isSelected && "bg-accent/50",
+              )}
+            >
               <div>
                 <p className="font-medium text-card-foreground">{p.label}</p>
                 <p className="text-xs text-muted-foreground">

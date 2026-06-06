@@ -10,6 +10,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@aegis/platform-context": "workspace:*",
     "@aegis/platform-registry": "workspace:*",
     "@aegis/platform-ui": "workspace:*",
     "@aegis/sdk-portfolios": "workspace:*"
