@@ -6,6 +6,7 @@ import { PersonaSwitcher } from "../persona-switcher";
 import { GlobalSearch } from "../global-search";
 import { ContextChip } from "../context-chip";
 import { WorkspaceBar } from "../workspace-bar";
+import { ActionsInbox } from "../actions-inbox";
 import { useRestoreFromUrl } from "../use-restore";
 
 const linkBase =
@@ -25,8 +26,9 @@ export function RootLayout() {
       <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card px-4">
         <span className="text-lg font-semibold">Aegis</span>
         <GlobalSearch />
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
           <ContextChip />
+          <ActionsInbox />
         </div>
       </header>
 
