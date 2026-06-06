@@ -32,6 +32,9 @@ importers:
       '@aegis/platform-registry':
         specifier: workspace:*
         version: link:../../packages/platform-registry
+      '@aegis/platform-search':
+        specifier: workspace:*
+        version: link:../../packages/platform-search
       '@aegis/platform-session':
         specifier: workspace:*
         version: link:../../packages/platform-session
@@ -148,6 +151,19 @@ importers:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.16
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.6(jiti@2.7.0)(lightningcss@1.32.0)
+
+  packages/platform-search:
+    dependencies:
+      '@aegis/models':
+        specifier: workspace:*
+        version: link:../models
+    devDependencies:
       typescript:
         specifier: ^5.7.3
         version: 5.9.3

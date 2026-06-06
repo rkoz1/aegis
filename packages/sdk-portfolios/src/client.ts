@@ -9,6 +9,7 @@ import { MOCK_PORTFOLIOS, delay } from "./mock";
 export interface PortfoliosSdk {
   list(): Promise<Portfolio[]>;
   get(id: string): Promise<Portfolio>;
+  search(query: string): Promise<Portfolio[]>;
 }
 
 export const portfoliosSdk: PortfoliosSdk = {
@@ -21,5 +22,16 @@ export const portfoliosSdk: PortfoliosSdk = {
     const found = MOCK_PORTFOLIOS.find((p) => p.id === id);
     if (!found) throw new Error(`Portfolio not found: ${id}`);
     return PortfolioSchema.parse(found);
+  },
+  async search(query) {
+    await delay(150);
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return MOCK_PORTFOLIOS.filter(
+      (p) =>
+        p.label.toLowerCase().includes(q) ||
+        p.strategy.toLowerCase().includes(q) ||
+        p.id.toLowerCase().includes(q),
+    ).map((p) => PortfolioSchema.parse(p));
   },
 };

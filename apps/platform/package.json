@@ -13,6 +13,7 @@
     "@aegis/function-compliance-checks": "workspace:*",
     "@aegis/function-portfolio-snapshot": "workspace:*",
     "@aegis/platform-registry": "workspace:*",
+    "@aegis/platform-search": "workspace:*",
     "@aegis/platform-session": "workspace:*",
     "@aegis/platform-ui": "workspace:*",
     "@aegis/sdk-portfolios": "workspace:*",
