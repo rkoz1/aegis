@@ -17,6 +17,7 @@
     "@aegis/platform-search": "workspace:*",
     "@aegis/platform-session": "workspace:*",
     "@aegis/platform-ui": "workspace:*",
+    "@aegis/platform-workspace": "workspace:*",
     "@aegis/sdk-portfolios": "workspace:*",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-router": "^1.0.0",

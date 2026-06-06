@@ -44,6 +44,9 @@ importers:
       '@aegis/platform-ui':
         specifier: workspace:*
         version: link:../../packages/platform-ui
+      '@aegis/platform-workspace':
+        specifier: workspace:*
+        version: link:../../packages/platform-workspace
       '@aegis/sdk-portfolios':
         specifier: workspace:*
         version: link:../../packages/sdk-portfolios
@@ -254,6 +257,34 @@ importers:
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
+
+  packages/platform-workspace:
+    dependencies:
+      '@aegis/platform-context':
+        specifier: workspace:*
+        version: link:../platform-context
+      '@aegis/platform-session':
+        specifier: workspace:*
+        version: link:../platform-session
+      zod:
+        specifier: ^4.0.0
+        version: 4.4.3
+      zustand:
+        specifier: ^5.0.0
+        version: 5.0.14(@types/react@19.2.16)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.16
+      react:
+        specifier: ^19.0.0
+        version: 19.2.7
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.6(jiti@2.7.0)(lightningcss@1.32.0)
 
   packages/sdk-portfolios:
     dependencies:

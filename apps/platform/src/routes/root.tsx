@@ -5,6 +5,8 @@ import { registry } from "../registry";
 import { PersonaSwitcher } from "../persona-switcher";
 import { GlobalSearch } from "../global-search";
 import { ContextChip } from "../context-chip";
+import { WorkspaceBar } from "../workspace-bar";
+import { useRestoreFromUrl } from "../use-restore";
 
 const linkBase =
   "block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground";
@@ -13,6 +15,7 @@ const linkActive = "bg-accent text-accent-foreground";
 /** The host shell chrome: top bar with global search, sidebar with persona +
  *  Persona-scoped nav, and the routed Function. */
 export function RootLayout() {
+  useRestoreFromUrl();
   const user = useSession((s) => s.user);
   const activePersona = useSession((s) => s.activePersona);
   const items = registry.visibleTo([activePersona]);
@@ -34,6 +37,10 @@ export function RootLayout() {
             <p className="mt-2 text-xs text-muted-foreground">
               Signed in as {user.name}
             </p>
+          </div>
+
+          <div className="mb-6">
+            <WorkspaceBar />
           </div>
 
           <nav className="space-y-1">
