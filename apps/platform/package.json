@@ -14,6 +14,7 @@
     "@aegis/function-portfolio-snapshot": "workspace:*",
     "@aegis/platform-actions": "workspace:*",
     "@aegis/platform-context": "workspace:*",
+    "@aegis/platform-lifecycle": "workspace:*",
     "@aegis/platform-registry": "workspace:*",
     "@aegis/platform-search": "workspace:*",
     "@aegis/platform-session": "workspace:*",

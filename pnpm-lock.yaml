@@ -35,6 +35,9 @@ importers:
       '@aegis/platform-context':
         specifier: workspace:*
         version: link:../../packages/platform-context
+      '@aegis/platform-lifecycle':
+        specifier: workspace:*
+        version: link:../../packages/platform-lifecycle
       '@aegis/platform-registry':
         specifier: workspace:*
         version: link:../../packages/platform-registry
@@ -194,6 +197,15 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.2.7
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.6(jiti@2.7.0)(lightningcss@1.32.0)
+
+  packages/platform-lifecycle:
+    devDependencies:
       typescript:
         specifier: ^5.7.3
         version: 5.9.3

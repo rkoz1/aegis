@@ -1,5 +1,6 @@
 import { Link, Outlet } from "@tanstack/react-router";
 import { useSession } from "@aegis/platform-session";
+import { groupByStage } from "@aegis/platform-lifecycle";
 
 import { registry } from "../registry";
 import { PersonaSwitcher } from "../persona-switcher";
@@ -20,6 +21,7 @@ export function RootLayout() {
   const user = useSession((s) => s.user);
   const activePersona = useSession((s) => s.activePersona);
   const items = registry.visibleTo([activePersona]);
+  const stageGroups = groupByStage(items);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -45,24 +47,43 @@ export function RootLayout() {
             <WorkspaceBar />
           </div>
 
-          <nav className="space-y-1">
-            <Link
-              to="/"
-              activeOptions={{ exact: true }}
-              className={linkBase}
-              activeProps={{ className: `${linkBase} ${linkActive}` }}
-            >
-              Home
-            </Link>
-            {items.map((m) => (
+          <nav className="space-y-4">
+            <div className="space-y-1">
               <Link
-                key={m.id}
-                to={m.route}
+                to="/"
+                activeOptions={{ exact: true }}
                 className={linkBase}
                 activeProps={{ className: `${linkBase} ${linkActive}` }}
               >
-                {m.label}
+                Home
               </Link>
+              <Link
+                to="/lifecycle"
+                className={linkBase}
+                activeProps={{ className: `${linkBase} ${linkActive}` }}
+              >
+                Lifecycle Map
+              </Link>
+            </div>
+
+            {/* Curated Navigation Taxonomy: Functions grouped by Investment
+                Lifecycle stage, front to back office. */}
+            {stageGroups.map((group) => (
+              <div key={group.stage.id} className="space-y-1">
+                <p className="px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {group.stage.label}
+                </p>
+                {group.items.map((m) => (
+                  <Link
+                    key={m.id}
+                    to={m.route}
+                    className={linkBase}
+                    activeProps={{ className: `${linkBase} ${linkActive}` }}
+                  >
+                    {m.label}
+                  </Link>
+                ))}
+              </div>
             ))}
           </nav>
         </aside>
