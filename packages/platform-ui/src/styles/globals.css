@@ -3,91 +3,97 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Aegis design language — a wealth platform with a trading-desk sensibility:
- * dense, data-first, dark-capable, with modern polish (see docs/DESIGN.md).
- * Slate surfaces, blue institutional primary, amber for attention, and semantic
- * gain/loss for P&L. Dark is the default (see ThemeProvider).
+ * Aegis design language — a wealth platform with a trading-terminal sensibility:
+ * Bloomberg-efficiency, dense and data-first, dark-first, modern polish. Warm
+ * charcoal surfaces, amber (Bloomberg-orange) primary, cyan for market data,
+ * green/red P&L, sharp (0px) corners. See docs/DESIGN.md + docs/DESIGN-LAYOUT.md.
+ * Dark is the default (see ThemeProvider).
  */
 
 :root {
-  --radius: 0.3rem;
+  --radius: 0rem;
 
-  --background: oklch(0.99 0.002 255);
-  --foreground: oklch(0.21 0.02 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.02 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.02 260);
+  /* Warm light counterpart (secondary; the platform is dark-first). */
+  --background: #faf4ee;
+  --foreground: #2a1d10;
+  --card: #ffffff;
+  --card-foreground: #2a1d10;
+  --popover: #ffffff;
+  --popover-foreground: #2a1d10;
 
-  --primary: oklch(0.5 0.16 258);
-  --primary-foreground: oklch(0.98 0.01 255);
-  --secondary: oklch(0.96 0.006 258);
-  --secondary-foreground: oklch(0.3 0.02 260);
-  --muted: oklch(0.96 0.006 258);
-  --muted-foreground: oklch(0.52 0.02 260);
-  --accent: oklch(0.95 0.008 258);
-  --accent-foreground: oklch(0.3 0.02 260);
+  --primary: #b35e00;
+  --primary-foreground: #ffffff;
+  --secondary: #f0e6da;
+  --secondary-foreground: #4a3a28;
+  --muted: #f0e6da;
+  --muted-foreground: #6a5a48;
+  --accent: #efe4d6;
+  --accent-foreground: #2a1d10;
 
-  --destructive: oklch(0.55 0.2 25);
-  --gain: oklch(0.55 0.14 150);
-  --loss: oklch(0.55 0.2 25);
-  --warning: oklch(0.7 0.13 76);
+  --destructive: #c0392b;
+  --gain: #15803d;
+  --loss: #c0392b;
+  --warning: #b35e00;
+  --info: #0369a1;
 
-  --border: oklch(0.92 0.005 258);
-  --input: oklch(0.92 0.005 258);
-  --ring: oklch(0.5 0.16 258);
+  --border: #e0d3c4;
+  --input: #e0d3c4;
+  --ring: #b35e00;
 
-  --sidebar: oklch(0.97 0.004 258);
-  --sidebar-foreground: oklch(0.3 0.02 260);
-  --sidebar-primary: oklch(0.5 0.16 258);
-  --sidebar-primary-foreground: oklch(0.98 0.01 255);
-  --sidebar-accent: oklch(0.95 0.008 258);
-  --sidebar-accent-foreground: oklch(0.3 0.02 260);
-  --sidebar-border: oklch(0.92 0.005 258);
-  --sidebar-ring: oklch(0.5 0.16 258);
+  --sidebar: #f5ece1;
+  --sidebar-foreground: #4a3a28;
+  --sidebar-primary: #b35e00;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #efe4d6;
+  --sidebar-accent-foreground: #2a1d10;
+  --sidebar-border: #e0d3c4;
+  --sidebar-ring: #b35e00;
 }
 
 .dark {
-  --background: oklch(0.17 0.01 260);
-  --foreground: oklch(0.96 0.01 255);
-  --card: oklch(0.21 0.012 260);
-  --card-foreground: oklch(0.96 0.01 255);
-  --popover: oklch(0.21 0.012 260);
-  --popover-foreground: oklch(0.96 0.01 255);
+  /* Warm-charcoal terminal (primary, default). */
+  --background: #150c06;
+  --foreground: #f2dfd1;
+  --card: #1f160d;
+  --card-foreground: #f2dfd1;
+  --popover: #271e15;
+  --popover-foreground: #f2dfd1;
 
-  --primary: oklch(0.62 0.16 258);
-  --primary-foreground: oklch(0.98 0.01 255);
-  --secondary: oklch(0.26 0.012 260);
-  --secondary-foreground: oklch(0.96 0.01 255);
-  --muted: oklch(0.26 0.012 260);
-  --muted-foreground: oklch(0.71 0.02 260);
-  --accent: oklch(0.28 0.014 260);
-  --accent-foreground: oklch(0.96 0.01 255);
+  --primary: #ff9500;
+  --primary-foreground: #2d1600;
+  --secondary: #32281f;
+  --secondary-foreground: #f2dfd1;
+  --muted: #271e15;
+  --muted-foreground: #a38d7a;
+  --accent: #32281f;
+  --accent-foreground: #f2dfd1;
 
-  --destructive: oklch(0.68 0.19 25);
-  --gain: oklch(0.72 0.15 155);
-  --loss: oklch(0.68 0.19 25);
-  --warning: oklch(0.8 0.13 78);
+  --destructive: #ff5d5d;
+  --gain: #4ade80;
+  --loss: #ff5d5d;
+  --warning: #ffbd7f;
+  --info: #8ad3ff;
 
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.62 0.16 258);
+  --border: #554334;
+  --input: #554334;
+  --ring: #ff9500;
 
-  --sidebar: oklch(0.19 0.012 260);
-  --sidebar-foreground: oklch(0.9 0.01 255);
-  --sidebar-primary: oklch(0.62 0.16 258);
-  --sidebar-primary-foreground: oklch(0.98 0.01 255);
-  --sidebar-accent: oklch(0.28 0.014 260);
-  --sidebar-accent-foreground: oklch(0.96 0.01 255);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.62 0.16 258);
+  --sidebar: #120c07;
+  --sidebar-foreground: #dbc2ad;
+  --sidebar-primary: #ff9500;
+  --sidebar-primary-foreground: #2d1600;
+  --sidebar-accent: #32281f;
+  --sidebar-accent-foreground: #f2dfd1;
+  --sidebar-border: #554334;
+  --sidebar-ring: #ff9500;
 }
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 6px);
+  /* Sharp shape language (terminal "instrument" feel). */
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0.125rem;
 
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
@@ -110,6 +116,7 @@
   --color-gain: var(--gain);
   --color-loss: var(--loss);
   --color-warning: var(--warning);
+  --color-info: var(--info);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

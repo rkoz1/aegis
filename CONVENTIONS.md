@@ -45,7 +45,7 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 
 ## Styling
 
-See **[docs/DESIGN.md](./docs/DESIGN.md)** for the full design system. The rules in brief:
+See **[docs/DESIGN.md](./docs/DESIGN.md)** (the look) and **[docs/DESIGN-LAYOUT.md](./docs/DESIGN-LAYOUT.md)** (the app skeleton — region placement, responsive). The rules in brief:
 - One shared UI package (`@aegis/platform-ui`) owns shadcn/ui (new-york, neutral) + the Tailwind v4 preset + the dark theme. Tailwind v4 is CSS-first (`@import "tailwindcss"`, `@theme`).
 - **Component-first: no raw markup where a component exists.** Add missing components to `@aegis/platform-ui` (never locally) and re-export them from its barrel `src/index.ts`.
 - Use semantic theme tokens (`bg-card`, `text-muted-foreground`), never hard-coded colors, so light/dark work.

@@ -1,6 +1,6 @@
 # CLAUDE.md — Aegis
 
-Read this, then [CONTEXT.md](./CONTEXT.md) (glossary), [ARCHITECTURE.md](./ARCHITECTURE.md) (map), [CONVENTIONS.md](./CONVENTIONS.md) (rules), and [docs/DESIGN.md](./docs/DESIGN.md) (design system) before working. The hard decisions live in [docs/adr/](./docs/adr); the build plan in [docs/PHASES.md](./docs/PHASES.md). This documentation exists so any agent — or a Citizen Developer working with an LLM — can extend the platform safely after context clearing.
+Read this, then [CONTEXT.md](./CONTEXT.md) (glossary), [ARCHITECTURE.md](./ARCHITECTURE.md) (map), [CONVENTIONS.md](./CONVENTIONS.md) (rules), [docs/DESIGN.md](./docs/DESIGN.md) (design system — the look), and [docs/DESIGN-LAYOUT.md](./docs/DESIGN-LAYOUT.md) (the app skeleton — where things go) before working. The hard decisions live in [docs/adr/](./docs/adr); the build plan in [docs/PHASES.md](./docs/PHASES.md). This documentation exists so any agent — or a Citizen Developer working with an LLM — can extend the platform safely after context clearing.
 
 ## Use the glossary
 
@@ -14,7 +14,7 @@ Use the canonical terms from [CONTEXT.md](./CONTEXT.md) exactly. The key ones: *
 - **Respect the layering.** `app → application → function → {sdk, platform, models, core}`; `sdk → {models, core}`. Never import upward. **Live never imports a Prototype.**
 - **Locked stack.** Use the versions in [ADR 0003](./docs/adr/0003-locked-stack-version-matrix.md). Tailwind v4 is CSS-first; shadcn lives in one shared `@aegis/platform-ui`.
 - **Flag Notable Changes.** A new dependency, a new pattern, or any deviation from a documented standard is a Notable Change — surface it to the user in-session and call it out in the PR. Pure Extension (within standards, reusing components) is the default path.
-- **Component-first UI.** Build surfaces from `@aegis/platform-ui` components; no raw markup where a component exists. Add missing components to `@aegis/platform-ui` and re-export from its barrel. See [docs/DESIGN.md](./docs/DESIGN.md).
+- **Component-first UI.** Build surfaces from `@aegis/platform-ui` components; no raw markup where a component exists. Add missing components to `@aegis/platform-ui` and re-export from its barrel. Follow [docs/DESIGN.md](./docs/DESIGN.md) for the look and [docs/DESIGN-LAYOUT.md](./docs/DESIGN-LAYOUT.md) for the skeleton — the design-base screenshots are inspiration only, the layout doc is canonical.
 
 ## Keep docs co-located and current
 

@@ -1,88 +1,124 @@
 # Aegis Design System
 
-How Aegis looks and how to keep it looking consistent. Design is a **first-class build
-step**, not an afterthought — every Function and shell surface is built from the shared
-component library, never hand-rolled markup. See [CONVENTIONS.md](../CONVENTIONS.md) for where
-this fits in the build process and [ADR 0003](./adr/0003-locked-stack-version-matrix.md) for the
-stack.
+The canonical design system. **LLMs and Citizen Developers must build to this doc.** It defines
+the *ethos and specifics* (look, color, type, components). The *skeleton* (where the sidebar,
+top bar, nav and panels live, and how they respond) is defined separately in
+[DESIGN-LAYOUT.md](./DESIGN-LAYOUT.md) — read both.
 
-## The look
+Design is a **first-class build step**, not an afterthought: every surface is built from the
+shared `@aegis/platform-ui` components, never hand-rolled markup. Stack: [ADR 0003](./adr/0003-locked-stack-version-matrix.md).
 
-A **wealth platform with a trading-desk sensibility** — Bloomberg-terminal DNA (dense,
-data-first, dark) with modern polish. Information is laid out the way portfolio managers and
-traders expect: tables of right-aligned, monospaced, tabular numbers; colour-coded P&L; KPI
-stats; status badges. Dark is the default; light is fully supported.
+> The Stitch mockups in [`docs/design-base/`](./design-base) are **visual inspiration** for the
+> components and feel. Their *layout placement is inconsistent* across screens — defer to
+> DESIGN-LAYOUT.md for skeleton, not the screenshots.
 
-## The rules
+## Brand & ethos
 
-1. **Component-first — no raw markup where a component exists.** If a shadcn primitive covers it
-   (Button, Card, Badge, Select, Input, DropdownMenu, Command, Popover, Tooltip, Avatar, Sidebar,
-   …), use it. Raw `<div>`/`<span>` with Tailwind is only for layout and spacing.
-2. **One UI package.** All components live in `@aegis/platform-ui`. Never add a component locally
-   in a Function or the app — add it to `@aegis/platform-ui` so every surface shares it.
-3. **Barrel exports.** Every component is re-exported from `packages/platform-ui/src/index.ts`;
-   consumers import from `@aegis/platform-ui` (the barrel), not subpaths.
-4. **Layout from shadcn blocks.** Use the [shadcn blocks](https://ui.shadcn.com/blocks) as the
-   layout vocabulary. The shell follows the **sidebar-07** pattern (collapsible-to-icon sidebar +
-   inset content).
+A **wealth platform with a trading-terminal sensibility** — Bloomberg-terminal efficiency with
+modern polish. Personality: **authoritative, precise, utilitarian**. Style: *Modern
+Professionalism* + *Systematic Functionalism* — information density over decoration, a
+compact grid-locked interface where every pixel is functional, refined with subtle borders and
+high-legibility type to reduce cognitive load during long monitoring sessions.
 
-## Theme tokens
+## Color
 
-Defined once in `packages/platform-ui/src/styles/globals.css`, OKLCH, for **dark** (`.dark`) and
-**light** (`:root`):
-- Surfaces: slate `background` / `card` / `popover` (near-black in dark, not pure black).
-- **`primary`** — institutional **blue** (buttons, active, focus ring).
-- **`accent`** — subtle slate (hover states); keep it neutral so hovers stay quiet.
-- **`warning`** — **amber**, used sparingly for attention/active highlights (the terminal nod).
-- **`gain` / `loss`** — semantic green/red for P&L and deltas (`text-gain`, `text-loss`).
-- `destructive`, `secondary`, `muted`, `border`, `input`, `ring`, `sidebar-*`.
-- `radius` is **0.3rem** (crisp, not pill); `@theme inline` maps everything to utilities
-  (`bg-primary`, `text-muted-foreground`, `text-gain`, …).
+Dark-first (default). Tokens live once in `packages/platform-ui/src/styles/globals.css`; use the
+semantic Tailwind utilities (`bg-card`, `text-muted-foreground`, `text-gain`), never hard-coded
+colors.
 
-Use the semantic tokens (`bg-card`, `text-muted-foreground`, `text-gain`), never hard-coded
-colors — that's what makes light/dark and future re-theming work. Style: **new-york**, icons
-**lucide-react**.
+**Dark (primary) palette:**
 
-## Typography & numerics
+| Token | Value | Use |
+|---|---|---|
+| `background` | `#150c06` | App canvas (deep warm charcoal) |
+| `card` | `#1f160d` | Panels / modules (Level 1) |
+| `popover` | `#271e15` | Dropdowns / dialogs (Level 2), 1px border |
+| `foreground` | `#f2dfd1` | Primary text (warm off-white) |
+| `muted-foreground` | `#a38d7a` | Labels, secondary text |
+| `primary` | `#ff9500` | **Bloomberg amber** — primary actions, active nav, focus, brand |
+| `primary-foreground` | `#2d1600` | Text on amber |
+| `secondary` | `#32281f` | Secondary surfaces / ghost-button bg |
+| `accent` | `#32281f` | Hover surfaces (kept neutral so hovers stay quiet) |
+| `info` | `#8ad3ff` | **Cyan** — market prices, links, tickers (tertiary) |
+| `gain` | `#4ade80` | P&L up / positive |
+| `loss` / `destructive` | `#ff5d5d` | P&L down / negative / errors |
+| `warning` | `#ffbd7f` | Soft amber for non-critical attention |
+| `border` / `input` | `#554334` | 1px dividers, input borders |
+| `ring` | `#ff9500` | Focus ring (amber) |
 
-- **Inter Variable** for UI, **JetBrains Mono Variable** for numerics — both self-hosted via
-  `@fontsource-variable/*` (imported in `apps/platform/src/main.tsx`), set as `--font-sans` /
-  `--font-mono`.
-- **All numbers use `font-mono` + `tabular-nums`** so columns align (`.font-mono` enables tabular
-  figures globally). Right-align numeric table columns and KPI values.
+Amber is used **sparingly** — primary actions, active state, focus, alerts — for instant
+hierarchy. Greens/reds are reserved for market signals (P&L). Cyan marks live market data.
+A warm light palette exists for completeness but the product is dark-first.
 
-## Data display (how PMs/traders read it)
+## Typography
 
-- Tabular data → **`Table`** with right-aligned mono numerics and status **`Badge`**s.
-- Metrics → **`Stat`** / `StatLabel` / `StatValue` (KPI blocks).
-- Signed/P&L values → **`Change`** (auto green/red by sign): `<Change value={pct} format={…} />`.
-- Selected rows use `data-state="selected"`; selection flows through the Context Bus.
+Dual-font strategy (self-hosted via `@fontsource-variable`, set as `--font-sans` / `--font-mono`):
 
-## Dark mode
+- **Inter** — all UI: navigation, labels, prose.
+- **JetBrains Mono** — **all numbers**: prices, tickers, P&L, quantities. Monospaced + tabular
+  figures so columns align for vertical scanning (`.font-mono` enables tabular nums globally).
 
-`ThemeProvider` + `ThemeToggle` (in `@aegis/platform-ui`) toggle the `.dark` class on
-`documentElement` and persist to `localStorage`. **Dark is the default** (trading-desk
-expectation) — `index.html` adds `.dark` before mount unless the user explicitly chose light, so
-there's no flash. The toggle lives in the shell header.
+Scale (apply with Tailwind text utilities):
 
-## Adding a component to `@aegis/platform-ui`
+| Role | Font | Size / weight | Use |
+|---|---|---|---|
+| display | Inter | 24px / 600, tight | Page titles |
+| headline | Inter | 18px / 600 | Section / panel titles |
+| body-lg | Inter | 14px / 400 | Default body |
+| body-sm | Inter | 12px / 400 | Dense body |
+| data-lg | JetBrains Mono | 14px / 500 | Primary numeric data |
+| data-sm | JetBrains Mono | 12px / 500 | **Table cells (default — max density)** |
+| label-xs | Inter | 10px / 700, uppercase, +letter-spacing | Table headers, metadata |
 
-1. From `packages/platform-ui`: `pnpm dlx shadcn@latest add <name>` (components.json is configured:
-   new-york, neutral, aliases to `@aegis/platform-ui/*`). Use `--overwrite` to skip prompts.
-2. **Verify** the generated file: imports are `@aegis/platform-ui/...` (not `@/...`), it lands in
-   `src/components/<name>.tsx`, and any new CSS tokens merged cleanly into `globals.css`.
-3. **Re-export** its public surface from `src/index.ts` (`export * from "./components/<name>"`).
-4. If it adds a hook under `src/hooks/`, the `./hooks/*` export in `package.json` already covers it.
-5. If a consumer (app/Function) imports an icon directly, add `lucide-react` to that package's deps.
-6. Run `pnpm check-types && pnpm build`, then **verify the classes survive** Tailwind v4's
-   cross-package scan (ADR 0003): grep the built CSS or check visually. The app's `index.css`
-   `@source`s `packages/platform-ui/src` and `packages/functions` — keep those.
+Rules: `data-sm` for most table content; `label-xs` for headers/descriptors; high contrast for
+primary data, muted grays for labels.
 
-## Accessibility / test-stability notes
+## Layout & spacing (density)
 
-- Nav links use `SidebarMenuButton asChild` wrapping a TanStack `<Link>` so they stay real `<a>`
-  elements (role `link`).
-- The persona control is a `Select` with `aria-label="Persona"` (role `combobox`).
-- Selectable cards (e.g. portfolio cards) stay `<button>` elements with their label as the
-  accessible name.
-Keep these stable — the Playwright smoke specs depend on them.
+Modular **4px grid**; deliberately tighter than typical web spacing.
+
+- Base unit **4px**; container padding **12px**; component gap **8px** (down to 4px); table row
+  height **~28px** with minimal padding; sidebar **240px**.
+- Tables are the primary layout engine — compact rows, sticky headers, 1px column dividers.
+
+## Elevation & shape
+
+- **Tonal layering + 1px low-contrast outlines**, not shadows (flat, fast, terminal feel).
+  L0 `background` → L1 `card` → L2 `popover` (+ 1px `border`). Shadows only for critical modal focus.
+- **Sharp: 0px radius.** Corners are square so components sit flush. (`--radius: 0`; avatars may
+  stay circular.)
+
+## Components
+
+Built on Radix primitives (shadcn) in `@aegis/platform-ui`, styled dense. **Add missing
+components here and re-export from the barrel `src/index.ts`** — never hand-roll or add locally.
+
+Available now: Button, Card, Badge, Input, Select, DropdownMenu, Command, Popover, Dialog,
+Sheet, Tooltip, Avatar, Separator, ScrollArea, Skeleton, Table, Sidebar, plus finance primitives
+**Stat** (KPI) and **Change** (signed gain/loss value), and **ThemeProvider/ThemeToggle**.
+
+Conventions & terminal-specific components to honour/build:
+- **Buttons** — small (24–32px). Primary = amber w/ dark text; secondary = ghost + 1px border.
+- **Inputs** — dark bg, sharp, monochrome border, amber only on focus.
+- **Data Tables** — the core. `label-xs` sticky headers; `data-sm` mono cells; right-align numbers;
+  support **flash** states (row/cell briefly tints gain/loss on value change).
+- **Badges/Chips** — small, rectangular status tags (OPEN, FILLED, REVIEW); low-opacity tint of
+  gain/loss/warning with high-contrast text.
+- **KPI Stat** — label-xs label + mono value; deltas via `Change`.
+- **Command Palette** — central quick nav + ticker search (blurred L2 surface). *(planned)*
+- **Ticker Strip** — horizontal market-index row (SPX/NDX/…) for top-of-page context. *(planned)*
+- **Trade Ticket** — order-entry panel, high-contrast Buy(green)/Sell(red). *(planned)*
+
+## Test-stable roles
+
+Keep accessible roles stable (Playwright depends on them): nav links stay `<a>`
+(`SidebarMenuButton asChild` + `Link`); persona is a `Select` labelled "Persona"; selectable
+table rows expose a `<button>` with the row's name.
+
+## Adding a component
+
+1. From `packages/platform-ui`: `pnpm dlx shadcn@latest add <name> --overwrite`.
+2. Verify imports are `@aegis/platform-ui/...` and tokens merged into `globals.css`.
+3. Re-export from `src/index.ts`; if it adds a hook, the `./hooks/*` export covers it.
+4. `pnpm check-types && pnpm build`; confirm classes survive Tailwind v4's cross-package scan
+   (the app `@source`s `packages/platform-ui/src` + `packages/functions`).
