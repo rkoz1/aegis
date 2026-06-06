@@ -7,7 +7,7 @@ export const portfolioSnapshotManifest: FunctionManifest = {
   label: "Portfolio Snapshot",
   category: "Portfolio Construction",
   entityTypes: ["portfolio"],
-  requiredRoles: [],
+  requiredRoles: ["portfolio-manager", "client-portal"],
   route: "/portfolio-snapshot",
   mount: PortfolioSnapshot,
 };

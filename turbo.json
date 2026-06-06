@@ -12,6 +12,7 @@
     "lint": {},
     "check-types": {
       "dependsOn": ["^check-types"]
-    }
+    },
+    "test": {}
   }
 }

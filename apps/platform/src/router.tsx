@@ -7,6 +7,7 @@ import {
 import { registry } from "./registry";
 import { RootLayout } from "./routes/root";
 import { HomePage } from "./routes/home";
+import { Guarded } from "./routes/guarded";
 
 const rootRoute = createRootRoute({ component: RootLayout });
 
@@ -21,7 +22,7 @@ const functionRoutes = registry.all().map((m) =>
   createRoute({
     getParentRoute: () => rootRoute,
     path: m.route,
-    component: m.mount,
+    component: () => <Guarded manifest={m} />,
   }),
 );
 

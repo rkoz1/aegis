@@ -1,22 +1,34 @@
 import { Link, Outlet } from "@tanstack/react-router";
+import { useSession } from "@aegis/platform-session";
 
 import { registry } from "../registry";
+import { PersonaSwitcher } from "../persona-switcher";
 
 const linkBase =
   "block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground";
 const linkActive = "bg-accent text-accent-foreground";
 
-/** The host shell chrome: nav driven by the Registry + the routed Function. */
+/** The host shell chrome: persona switcher + nav scoped to the active Persona. */
 export function RootLayout() {
-  const items = registry.all();
+  const user = useSession((s) => s.user);
+  const activePersona = useSession((s) => s.activePersona);
+  const items = registry.visibleTo([activePersona]);
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-64 shrink-0 border-r border-border bg-card p-4">
+      <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-card p-4">
         <div className="mb-6">
           <span className="text-lg font-semibold">Aegis</span>
           <p className="text-xs text-muted-foreground">Wealth Platform</p>
         </div>
+
+        <div className="mb-6">
+          <PersonaSwitcher />
+          <p className="mt-2 text-xs text-muted-foreground">
+            Signed in as {user.name}
+          </p>
+        </div>
+
         <nav className="space-y-1">
           <Link
             to="/"
