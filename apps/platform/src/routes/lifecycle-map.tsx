@@ -1,18 +1,11 @@
 import { LIFECYCLE_STAGES } from "@aegis/platform-lifecycle";
 import { useSession } from "@aegis/platform-session";
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  cn,
-} from "@aegis/platform-ui";
+import { cn } from "@aegis/platform-ui";
 
 import { registry } from "../registry";
 
 /** A graphical view of the end-to-end Investment Lifecycle and where the
- *  Persona's Functions sit along it. */
+ *  Persona's Functions sit along it — terminal-style stage panels. */
 export function LifecycleMap() {
   const persona = useSession((s) => s.activePersona);
   const visible = registry.visibleTo([persona]);
@@ -20,45 +13,45 @@ export function LifecycleMap() {
   return (
     <section className="space-y-4">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Investment Lifecycle</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl font-semibold tracking-tight">Investment Lifecycle</h1>
+        <p className="text-xs text-muted-foreground">
           End-to-end, front to back office. Functions available to you appear under
           their stage.
         </p>
       </header>
 
-      <ol className="grid gap-3 md:grid-cols-3">
+      <ol className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
         {LIFECYCLE_STAGES.map((stage, i) => {
           const fns = visible.filter((m) => m.category === stage.label);
           const populated = fns.length > 0;
           return (
-            <li key={stage.id}>
-              <Card
-                className={cn(
-                  "h-full",
-                  populated ? "border-primary/40" : "opacity-60",
-                )}
-              >
-                <CardHeader>
-                  <Badge variant="outline" className="w-fit">
-                    Stage {i + 1}
-                  </Badge>
-                  <CardTitle className="text-base">{stage.label}</CardTitle>
-                </CardHeader>
-                <CardContent>
+            <li
+              key={stage.id}
+              className={cn(
+                "border border-border bg-card",
+                !populated && "opacity-50",
+              )}
+            >
+              <div className="flex items-center justify-between border-b border-border px-3 py-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Stage {String(i + 1).padStart(2, "0")}
+                </span>
+                {populated && <span className="size-1.5 bg-primary" />}
+              </div>
+              <div className="px-3 py-2">
+                <h2 className="text-sm font-medium">{stage.label}</h2>
+                <ul className="mt-1.5 space-y-0.5">
                   {populated ? (
-                    <ul className="space-y-1">
-                      {fns.map((f) => (
-                        <li key={f.id} className="text-sm">
-                          • {f.label}
-                        </li>
-                      ))}
-                    </ul>
+                    fns.map((f) => (
+                      <li key={f.id} className="text-xs text-primary">
+                        {f.label}
+                      </li>
+                    ))
                   ) : (
-                    <p className="text-xs text-muted-foreground">No functions yet</p>
+                    <li className="font-mono text-[10px] text-muted-foreground">—</li>
                   )}
-                </CardContent>
-              </Card>
+                </ul>
+              </div>
             </li>
           );
         })}

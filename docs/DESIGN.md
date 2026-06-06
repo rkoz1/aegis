@@ -109,6 +109,26 @@ Conventions & terminal-specific components to honour/build:
 - **Ticker Strip** — horizontal market-index row (SPX/NDX/…) for top-of-page context. *(planned)*
 - **Trade Ticket** — order-entry panel, high-contrast Buy(green)/Sell(red). *(planned)*
 
+## Keyboard & interaction (desktop power users)
+
+The platform is **keyboard-first on desktop** — a power user should be able to navigate and act
+without the mouse, with a **hinting system** that teaches shortcuts in context.
+
+- **Command palette** — `⌘K` / `Ctrl+K` (or `/`) opens a palette to jump to any Function/route and
+  search Entities. The primary fast-navigation surface.
+- **Leader keys with hints (which-key)** — pressing a leader (`g` = "go to") shows a transient
+  **hint overlay** of the next keys (`g h` Home, `g l` Lifecycle, `g 1–9` nth function). The hint is
+  the teaching mechanism: press the prefix, see what's available.
+- **Shortcuts overlay** — `?` opens the full cheatsheet. `Esc` cancels/closes.
+- **Table navigation** — data tables are focusable; `↑` / `↓` move a row cursor and select as they
+  go; `Enter` (or a click) confirms.
+- **Row click selects by default** — clicking a table row selects that Entity (emits it on the
+  Context Bus) unless a Function explicitly opts a row out (e.g. rows with their own primary action).
+- Shortcuts are suppressed while typing in inputs/textareas.
+- Implementation: `apps/platform/src/power-nav.tsx` (palette, leader hints, `?`); tables wire
+  `tabIndex` + an arrow-key handler (see `portfolio-snapshot`). New Functions should make their
+  primary list/table rows selectable and, where useful, register go-to/command entries.
+
 ## Test-stable roles
 
 Keep accessible roles stable (Playwright depends on them): nav links stay `<a>`
