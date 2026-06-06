@@ -1,5 +1,17 @@
 import { usePortfolios } from "@aegis/sdk-portfolios";
-import { Badge, Skeleton, cn } from "@aegis/platform-ui";
+import {
+  Change,
+  Stat,
+  StatLabel,
+  StatValue,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  cn,
+} from "@aegis/platform-ui";
 import {
   useContextBus,
   useContextOfType,
@@ -7,7 +19,7 @@ import {
   ContextTypes,
 } from "@aegis/platform-context";
 
-function formatMoney(amount: number, currency: string): string {
+function money(amount: number, currency: string): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
@@ -15,18 +27,25 @@ function formatMoney(amount: number, currency: string): string {
   }).format(amount);
 }
 
+const pct = (v: number) => `${v.toFixed(2)}%`;
+
 /**
- * The Portfolio Snapshot Function — reads portfolios through the SDK hook and
- * renders them as selectable cards. Selecting one emits a portfolio Context onto
- * the bus; other Functions react. Imports no other Function; no direct HTTP.
+ * The Portfolio Snapshot Function — a KPI row + a portfolios blotter. Selecting a
+ * row emits a portfolio Context; numerics are mono/tabular with P&L colouring.
  */
 export function PortfolioSnapshot() {
-  const { data, isLoading, isError, error } = usePortfolios();
+  const { data, isLoading, isError } = usePortfolios();
   const setContext = useContextBus((s) => s.setContext);
   const selected = useContextOfType(ContextTypes.portfolio);
 
+  const portfolios = data ?? [];
+  const totalHoldings = portfolios.reduce((s, p) => s + p.holdingsCount, 0);
+  const avgChange = portfolios.length
+    ? portfolios.reduce((s, p) => s + p.dayChangePct, 0) / portfolios.length
+    : 0;
+
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <header>
         <h1 className="text-2xl font-semibold tracking-tight">Portfolio Snapshot</h1>
         <p className="text-sm text-muted-foreground">
@@ -34,55 +53,87 @@ export function PortfolioSnapshot() {
         </p>
       </header>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Stat>
+          <StatLabel>Portfolios</StatLabel>
+          <StatValue>{portfolios.length}</StatValue>
+        </Stat>
+        <Stat>
+          <StatLabel>Total Holdings</StatLabel>
+          <StatValue>{totalHoldings}</StatValue>
+        </Stat>
+        <Stat>
+          <StatLabel>Avg Day Change</StatLabel>
+          <StatValue>
+            <Change value={avgChange} format={pct} />
+          </StatValue>
+        </Stat>
+      </div>
+
       {isError && (
-        <p className="text-sm text-destructive">
-          Failed to load portfolios: {String(error)}
-        </p>
+        <p className="text-sm text-destructive">Failed to load portfolios.</p>
       )}
 
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {isLoading &&
-          Array.from({ length: 4 }).map((_, i) => (
-            <li key={i}>
-              <Skeleton className="h-28 w-full rounded-xl" />
-            </li>
-          ))}
-
-        {data?.map((p) => {
-          const isSelected = selected?.id === p.id;
-          return (
-            <li key={p.id}>
-              <button
-                type="button"
-                onClick={() =>
-                  setContext(
-                    makeContext(ContextTypes.portfolio, { id: p.id, name: p.label }),
-                  )
-                }
-                aria-pressed={isSelected}
-                className={cn(
-                  "w-full rounded-xl border bg-card p-4 text-left text-card-foreground shadow-sm transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isSelected ? "border-primary ring-1 ring-primary" : "border-border",
-                )}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <h2 className="font-medium">{p.label}</h2>
-                  <Badge variant="outline">{p.id}</Badge>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">{p.strategy}</p>
-                <div className="mt-3 flex items-baseline justify-between">
-                  <span className="text-lg font-semibold">
-                    {formatMoney(p.marketValue.amount, p.marketValue.currency)}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {p.holdingsCount} holdings
-                  </span>
-                </div>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="overflow-hidden rounded-lg border border-border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Portfolio</TableHead>
+              <TableHead>Strategy</TableHead>
+              <TableHead className="text-right">Market Value</TableHead>
+              <TableHead className="text-right">Holdings</TableHead>
+              <TableHead className="text-right">Day</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-muted-foreground">
+                  Loading portfolios…
+                </TableCell>
+              </TableRow>
+            )}
+            {portfolios.map((p) => {
+              const isSelected = selected?.id === p.id;
+              return (
+                <TableRow key={p.id} data-state={isSelected ? "selected" : undefined}>
+                  <TableCell>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setContext(
+                          makeContext(ContextTypes.portfolio, {
+                            id: p.id,
+                            name: p.label,
+                          }),
+                        )
+                      }
+                      aria-pressed={isSelected}
+                      className={cn(
+                        "text-left font-medium hover:underline",
+                        isSelected && "text-primary",
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                    <div className="font-mono text-xs text-muted-foreground">{p.id}</div>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">{p.strategy}</TableCell>
+                  <TableCell className="text-right font-mono tabular-nums">
+                    {money(p.marketValue.amount, p.marketValue.currency)}
+                  </TableCell>
+                  <TableCell className="text-right font-mono tabular-nums">
+                    {p.holdingsCount}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Change value={p.dayChangePct} format={pct} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </section>
   );
 }

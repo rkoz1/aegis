@@ -11,6 +11,7 @@ export const MOCK_PORTFOLIOS: Portfolio[] = [
     baseCurrency: "USD",
     marketValue: { amount: 4_250_000, currency: "USD" },
     holdingsCount: 42,
+    dayChangePct: 0.42,
   },
   {
     id: "pf-002",
@@ -21,6 +22,7 @@ export const MOCK_PORTFOLIOS: Portfolio[] = [
     baseCurrency: "USD",
     marketValue: { amount: 1_980_500, currency: "USD" },
     holdingsCount: 28,
+    dayChangePct: -1.13,
   },
   {
     id: "pf-003",
@@ -31,6 +33,7 @@ export const MOCK_PORTFOLIOS: Portfolio[] = [
     baseCurrency: "GBP",
     marketValue: { amount: 87_400_000, currency: "GBP" },
     holdingsCount: 113,
+    dayChangePct: 0.08,
   },
 ];
 

@@ -2,70 +2,96 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Aegis design language — a wealth platform with a trading-desk sensibility:
+ * dense, data-first, dark-capable, with modern polish (see docs/DESIGN.md).
+ * Slate surfaces, blue institutional primary, amber for attention, and semantic
+ * gain/loss for P&L. Dark is the default (see ThemeProvider).
+ */
+
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --radius: 0.3rem;
+
+  --background: oklch(0.99 0.002 255);
+  --foreground: oklch(0.21 0.02 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.21 0.02 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --popover-foreground: oklch(0.21 0.02 260);
+
+  --primary: oklch(0.5 0.16 258);
+  --primary-foreground: oklch(0.98 0.01 255);
+  --secondary: oklch(0.96 0.006 258);
+  --secondary-foreground: oklch(0.3 0.02 260);
+  --muted: oklch(0.96 0.006 258);
+  --muted-foreground: oklch(0.52 0.02 260);
+  --accent: oklch(0.95 0.008 258);
+  --accent-foreground: oklch(0.3 0.02 260);
+
+  --destructive: oklch(0.55 0.2 25);
+  --gain: oklch(0.55 0.14 150);
+  --loss: oklch(0.55 0.2 25);
+  --warning: oklch(0.7 0.13 76);
+
+  --border: oklch(0.92 0.005 258);
+  --input: oklch(0.92 0.005 258);
+  --ring: oklch(0.5 0.16 258);
+
+  --sidebar: oklch(0.97 0.004 258);
+  --sidebar-foreground: oklch(0.3 0.02 260);
+  --sidebar-primary: oklch(0.5 0.16 258);
+  --sidebar-primary-foreground: oklch(0.98 0.01 255);
+  --sidebar-accent: oklch(0.95 0.008 258);
+  --sidebar-accent-foreground: oklch(0.3 0.02 260);
+  --sidebar-border: oklch(0.92 0.005 258);
+  --sidebar-ring: oklch(0.5 0.16 258);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --background: oklch(0.17 0.01 260);
+  --foreground: oklch(0.96 0.01 255);
+  --card: oklch(0.21 0.012 260);
+  --card-foreground: oklch(0.96 0.01 255);
+  --popover: oklch(0.21 0.012 260);
+  --popover-foreground: oklch(0.96 0.01 255);
+
+  --primary: oklch(0.62 0.16 258);
+  --primary-foreground: oklch(0.98 0.01 255);
+  --secondary: oklch(0.26 0.012 260);
+  --secondary-foreground: oklch(0.96 0.01 255);
+  --muted: oklch(0.26 0.012 260);
+  --muted-foreground: oklch(0.71 0.02 260);
+  --accent: oklch(0.28 0.014 260);
+  --accent-foreground: oklch(0.96 0.01 255);
+
+  --destructive: oklch(0.68 0.19 25);
+  --gain: oklch(0.72 0.15 155);
+  --loss: oklch(0.68 0.19 25);
+  --warning: oklch(0.8 0.13 78);
+
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.62 0.16 258);
+
+  --sidebar: oklch(0.19 0.012 260);
+  --sidebar-foreground: oklch(0.9 0.01 255);
+  --sidebar-primary: oklch(0.62 0.16 258);
+  --sidebar-primary-foreground: oklch(0.98 0.01 255);
+  --sidebar-accent: oklch(0.28 0.014 260);
+  --sidebar-accent-foreground: oklch(0.96 0.01 255);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.62 0.16 258);
 }
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -81,6 +107,9 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
+  --color-warning: var(--warning);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -99,6 +128,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
+  }
+  /* Numeric/monospace data aligns in columns. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
   }
 }

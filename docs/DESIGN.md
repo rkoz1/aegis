@@ -6,6 +6,13 @@ component library, never hand-rolled markup. See [CONVENTIONS.md](../CONVENTIONS
 this fits in the build process and [ADR 0003](./adr/0003-locked-stack-version-matrix.md) for the
 stack.
 
+## The look
+
+A **wealth platform with a trading-desk sensibility** — Bloomberg-terminal DNA (dense,
+data-first, dark) with modern polish. Information is laid out the way portfolio managers and
+traders expect: tables of right-aligned, monospaced, tabular numbers; colour-coded P&L; KPI
+stats; status badges. Dark is the default; light is fully supported.
+
 ## The rules
 
 1. **Component-first — no raw markup where a component exists.** If a shadcn primitive covers it
@@ -21,21 +28,42 @@ stack.
 
 ## Theme tokens
 
-Defined once in `packages/platform-ui/src/styles/globals.css`:
-- OKLCH color tokens for **light** (`:root`) and **dark** (`.dark`) — `background`, `foreground`,
-  `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`, `input`,
-  `ring`, plus `sidebar-*` tokens.
-- `@theme inline` maps them to Tailwind utilities (`bg-primary`, `text-muted-foreground`, …).
-- Style: **new-york**, base color **neutral**, icons **lucide-react**.
+Defined once in `packages/platform-ui/src/styles/globals.css`, OKLCH, for **dark** (`.dark`) and
+**light** (`:root`):
+- Surfaces: slate `background` / `card` / `popover` (near-black in dark, not pure black).
+- **`primary`** — institutional **blue** (buttons, active, focus ring).
+- **`accent`** — subtle slate (hover states); keep it neutral so hovers stay quiet.
+- **`warning`** — **amber**, used sparingly for attention/active highlights (the terminal nod).
+- **`gain` / `loss`** — semantic green/red for P&L and deltas (`text-gain`, `text-loss`).
+- `destructive`, `secondary`, `muted`, `border`, `input`, `ring`, `sidebar-*`.
+- `radius` is **0.3rem** (crisp, not pill); `@theme inline` maps everything to utilities
+  (`bg-primary`, `text-muted-foreground`, `text-gain`, …).
 
-Use the semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`), never hard-coded
-colors — that's what makes light/dark and future re-theming work.
+Use the semantic tokens (`bg-card`, `text-muted-foreground`, `text-gain`), never hard-coded
+colors — that's what makes light/dark and future re-theming work. Style: **new-york**, icons
+**lucide-react**.
+
+## Typography & numerics
+
+- **Inter Variable** for UI, **JetBrains Mono Variable** for numerics — both self-hosted via
+  `@fontsource-variable/*` (imported in `apps/platform/src/main.tsx`), set as `--font-sans` /
+  `--font-mono`.
+- **All numbers use `font-mono` + `tabular-nums`** so columns align (`.font-mono` enables tabular
+  figures globally). Right-align numeric table columns and KPI values.
+
+## Data display (how PMs/traders read it)
+
+- Tabular data → **`Table`** with right-aligned mono numerics and status **`Badge`**s.
+- Metrics → **`Stat`** / `StatLabel` / `StatValue` (KPI blocks).
+- Signed/P&L values → **`Change`** (auto green/red by sign): `<Change value={pct} format={…} />`.
+- Selected rows use `data-state="selected"`; selection flows through the Context Bus.
 
 ## Dark mode
 
 `ThemeProvider` + `ThemeToggle` (in `@aegis/platform-ui`) toggle the `.dark` class on
-`documentElement` and persist to `localStorage`. `apps/platform/index.html` sets the class before
-mount to avoid a flash. The toggle lives in the shell header.
+`documentElement` and persist to `localStorage`. **Dark is the default** (trading-desk
+expectation) — `index.html` adds `.dark` before mount unless the user explicitly chose light, so
+there's no flash. The toggle lives in the shell header.
 
 ## Adding a component to `@aegis/platform-ui`
 
