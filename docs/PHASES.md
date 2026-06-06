@@ -4,6 +4,8 @@ The V1 build proceeds as **tracer bullets**: every phase is a vertical slice thr
 
 See also: [CONTEXT.md](../CONTEXT.md) (glossary), [docs/adr/](./adr) (decisions). Phase 0 uses the locked stack from [ADR 0003](./adr/0003-locked-stack-version-matrix.md).
 
+**Status: Phases 0–7 complete** (V1 platform). All gates green per phase (type-check, unit tests, `check-deps`, build). Playwright e2e is scaffolded in `apps/platform` and needs browser binaries (`npx playwright install`) to run.
+
 ## V1 / V2 boundary
 
 - **V1** = the platform and *all* its cross-cutting features, proven end-to-end with just enough representative Functions / SDKs / Entities to exercise them.

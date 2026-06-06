@@ -18,7 +18,7 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 - **Functions never import other Functions.** Coordinate via the Context Bus only.
 - **Live never imports a Prototype.** Prototypes may import Live units (read-only reuse).
 - Never import upward (a Function must not import an Application or the host shell).
-- Enforcement is mechanical but **kept light early** — do not gold-plate boundary rules before there is code to guard; avoid Turborepo/ESLint/TS-paths enforcement loops.
+- Enforcement is mechanical but **kept light** — a standalone `pnpm check-deps` (`scripts/check-deps.mjs`) validates the layering from each `package.json`. Deliberately *not* ESLint/Turborepo boundary plugins, to avoid tool-interaction loops.
 
 ## Adding a Function
 
@@ -56,7 +56,9 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 ## Build discipline
 
 - Work in **tracer-bullet phases** ([docs/PHASES.md](./docs/PHASES.md)): every change ends in something a human can click and test. No pure-background phases.
-- Each phase is committed to git (branch + PR). Unit tests grow from Phase 0; e2e (Playwright) lands at Phase 7.
+- Each phase is committed to git (branch + PR). Unit tests (Vitest) grow from Phase 0 and run via `pnpm test`.
+- E2E (Playwright) is scaffolded in `apps/platform` (`pnpm --filter @aegis/platform e2e`); it needs browser binaries (`npx playwright install`) and is intentionally separate from `pnpm test` so unit CI stays green without browsers.
+- Pre-commit gate (also the citizen-dev path): `pnpm check-types && pnpm test && pnpm check-deps && pnpm build`.
 
 ## Documentation
 
