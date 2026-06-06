@@ -1,6 +1,24 @@
 import { Link, Outlet } from "@tanstack/react-router";
+import { Home, Workflow, Component } from "lucide-react";
 import { useSession } from "@aegis/platform-session";
 import { groupByStage } from "@aegis/platform-lifecycle";
+import {
+  Avatar,
+  AvatarFallback,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  ThemeToggle,
+} from "@aegis/platform-ui";
 
 import { registry } from "../registry";
 import { PersonaSwitcher } from "../persona-switcher";
@@ -10,12 +28,21 @@ import { WorkspaceBar } from "../workspace-bar";
 import { ActionsInbox } from "../actions-inbox";
 import { useRestoreFromUrl } from "../use-restore";
 
-const linkBase =
-  "block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground";
-const linkActive = "bg-accent text-accent-foreground";
+const activeLink = {
+  className: "bg-sidebar-accent font-medium text-sidebar-accent-foreground",
+};
 
-/** The host shell chrome: top bar with global search, sidebar with persona +
- *  Persona-scoped nav, and the routed Function. */
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .map((w) => w[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+/** The host shell chrome: collapsible Sidebar (brand + persona + lifecycle nav +
+ *  workspaces) and an inset top bar with global search, context, actions, theme. */
 export function RootLayout() {
   useRestoreFromUrl();
   const user = useSession((s) => s.user);
@@ -24,74 +51,93 @@ export function RootLayout() {
   const stageGroups = groupByStage(items);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card px-4">
-        <span className="text-lg font-semibold">Aegis</span>
-        <GlobalSearch />
-        <div className="ml-auto flex items-center gap-3">
-          <ContextChip />
-          <ActionsInbox />
-        </div>
-      </header>
-
-      <div className="flex flex-1">
-        <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-card p-4">
-          <div className="mb-6">
-            <PersonaSwitcher />
-            <p className="mt-2 text-xs text-muted-foreground">
-              Signed in as {user.name}
-            </p>
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <SidebarHeader className="gap-2">
+          <div className="flex items-center gap-2 px-1 py-1">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+              Æ
+            </div>
+            <div className="group-data-[collapsible=icon]:hidden">
+              <p className="text-sm font-semibold leading-none">Aegis</p>
+              <p className="text-xs text-muted-foreground">Wealth Platform</p>
+            </div>
           </div>
+          <div className="group-data-[collapsible=icon]:hidden">
+            <PersonaSwitcher />
+          </div>
+        </SidebarHeader>
 
-          <div className="mb-6">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Home">
+                  <Link to="/" activeOptions={{ exact: true }} activeProps={activeLink}>
+                    <Home />
+                    <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Lifecycle Map">
+                  <Link to="/lifecycle" activeProps={activeLink}>
+                    <Workflow />
+                    <span>Lifecycle Map</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+
+          {stageGroups.map((group) => (
+            <SidebarGroup key={group.stage.id}>
+              <SidebarGroupLabel>{group.stage.label}</SidebarGroupLabel>
+              <SidebarMenu>
+                {group.items.map((m) => (
+                  <SidebarMenuItem key={m.id}>
+                    <SidebarMenuButton asChild tooltip={m.label}>
+                      <Link to={m.route} activeProps={activeLink}>
+                        <Component />
+                        <span>{m.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+
+        <SidebarFooter>
+          <div className="group-data-[collapsible=icon]:hidden">
             <WorkspaceBar />
           </div>
+          <div className="flex items-center gap-2 px-2 py-1">
+            <Avatar className="size-7">
+              <AvatarFallback className="text-xs">{initials(user.name)}</AvatarFallback>
+            </Avatar>
+            <span className="text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+              {user.name}
+            </span>
+          </div>
+        </SidebarFooter>
+      </Sidebar>
 
-          <nav className="space-y-4">
-            <div className="space-y-1">
-              <Link
-                to="/"
-                activeOptions={{ exact: true }}
-                className={linkBase}
-                activeProps={{ className: `${linkBase} ${linkActive}` }}
-              >
-                Home
-              </Link>
-              <Link
-                to="/lifecycle"
-                className={linkBase}
-                activeProps={{ className: `${linkBase} ${linkActive}` }}
-              >
-                Lifecycle Map
-              </Link>
-            </div>
-
-            {/* Curated Navigation Taxonomy: Functions grouped by Investment
-                Lifecycle stage, front to back office. */}
-            {stageGroups.map((group) => (
-              <div key={group.stage.id} className="space-y-1">
-                <p className="px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  {group.stage.label}
-                </p>
-                {group.items.map((m) => (
-                  <Link
-                    key={m.id}
-                    to={m.route}
-                    className={linkBase}
-                    activeProps={{ className: `${linkBase} ${linkActive}` }}
-                  >
-                    {m.label}
-                  </Link>
-                ))}
-              </div>
-            ))}
-          </nav>
-        </aside>
-
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
+          <SidebarTrigger />
+          <GlobalSearch />
+          <div className="ml-auto flex items-center gap-2">
+            <ContextChip />
+            <ActionsInbox />
+            <ThemeToggle />
+          </div>
+        </header>
         <main className="flex-1 p-8">
           <Outlet />
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

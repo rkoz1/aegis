@@ -4,7 +4,9 @@ The V1 build proceeds as **tracer bullets**: every phase is a vertical slice thr
 
 See also: [CONTEXT.md](../CONTEXT.md) (glossary), [docs/adr/](./adr) (decisions). Phase 0 uses the locked stack from [ADR 0003](./adr/0003-locked-stack-version-matrix.md).
 
-**Status: Phases 0–7 complete** (V1 platform). All gates green per phase (type-check, unit tests, `check-deps`, build). Playwright e2e is scaffolded in `apps/platform` and needs browser binaries (`npx playwright install`) to run.
+**Status: Phases 0–7 complete** (V1 platform) + a V0 styling pass. All gates green per phase (type-check, unit tests, `check-deps`, build). Playwright e2e is scaffolded in `apps/platform` and needs browser binaries (`npx playwright install`) to run.
+
+**Definition of Done (every phase / Function):** gates green **and** a design pass — surfaces built from `@aegis/platform-ui` components per [DESIGN.md](./DESIGN.md), no raw markup where a component exists, light + dark verified.
 
 ## V1 / V2 boundary
 

@@ -1,5 +1,5 @@
 import { usePortfolios } from "@aegis/sdk-portfolios";
-import { cn } from "@aegis/platform-ui";
+import { Badge, Skeleton, cn } from "@aegis/platform-ui";
 import {
   useContextBus,
   useContextOfType,
@@ -17,8 +17,8 @@ function formatMoney(amount: number, currency: string): string {
 
 /**
  * The Portfolio Snapshot Function — reads portfolios through the SDK hook and
- * renders them. Selecting a card emits a portfolio Context onto the bus; other
- * Functions react. It imports no other Function and touches no HTTP directly.
+ * renders them as selectable cards. Selecting one emits a portfolio Context onto
+ * the bus; other Functions react. Imports no other Function; no direct HTTP.
  */
 export function PortfolioSnapshot() {
   const { data, isLoading, isError, error } = usePortfolios();
@@ -34,10 +34,6 @@ export function PortfolioSnapshot() {
         </p>
       </header>
 
-      {isLoading && (
-        <p className="text-sm text-muted-foreground">Loading portfolios…</p>
-      )}
-
       {isError && (
         <p className="text-sm text-destructive">
           Failed to load portfolios: {String(error)}
@@ -45,6 +41,13 @@ export function PortfolioSnapshot() {
       )}
 
       <ul className="grid gap-3 sm:grid-cols-2">
+        {isLoading &&
+          Array.from({ length: 4 }).map((_, i) => (
+            <li key={i}>
+              <Skeleton className="h-28 w-full rounded-xl" />
+            </li>
+          ))}
+
         {data?.map((p) => {
           const isSelected = selected?.id === p.id;
           return (
@@ -58,15 +61,13 @@ export function PortfolioSnapshot() {
                 }
                 aria-pressed={isSelected}
                 className={cn(
-                  "w-full rounded-lg border bg-card p-4 text-left text-card-foreground shadow-sm transition-colors hover:bg-accent/40",
-                  isSelected
-                    ? "border-primary ring-1 ring-primary"
-                    : "border-border",
+                  "w-full rounded-xl border bg-card p-4 text-left text-card-foreground shadow-sm transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  isSelected ? "border-primary ring-1 ring-primary" : "border-border",
                 )}
               >
-                <div className="flex items-baseline justify-between gap-2">
+                <div className="flex items-start justify-between gap-2">
                   <h2 className="font-medium">{p.label}</h2>
-                  <span className="text-xs text-muted-foreground">{p.id}</span>
+                  <Badge variant="outline">{p.id}</Badge>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">{p.strategy}</p>
                 <div className="mt-3 flex items-baseline justify-between">

@@ -1,3 +1,10 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@aegis/platform-ui";
 import { useSession, ROLE_LABELS, type Role } from "@aegis/platform-session";
 
 /** Switches the active Persona among the signed-in User's Roles. */
@@ -7,25 +14,20 @@ export function PersonaSwitcher() {
   const setActivePersona = useSession((s) => s.setActivePersona);
 
   return (
-    <div className="space-y-1">
-      <label
-        htmlFor="persona"
-        className="text-xs font-medium text-muted-foreground"
-      >
-        Persona
-      </label>
-      <select
-        id="persona"
-        value={activePersona}
-        onChange={(e) => setActivePersona(e.target.value as Role)}
-        className="w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-      >
+    <Select
+      value={activePersona}
+      onValueChange={(v) => setActivePersona(v as Role)}
+    >
+      <SelectTrigger aria-label="Persona" className="w-full" size="sm">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
         {user.roles.map((r) => (
-          <option key={r} value={r}>
+          <SelectItem key={r} value={r}>
             {ROLE_LABELS[r]}
-          </option>
+          </SelectItem>
         ))}
-      </select>
-    </div>
+      </SelectContent>
+    </Select>
   );
 }

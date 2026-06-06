@@ -1,5 +1,5 @@
 import { usePortfolios } from "@aegis/sdk-portfolios";
-import { cn } from "@aegis/platform-ui";
+import { Badge, Card, cn } from "@aegis/platform-ui";
 import { useContextOfType, ContextTypes } from "@aegis/platform-context";
 
 /** A mock mandate check: large books are flagged for review. */
@@ -29,12 +29,12 @@ export function ComplianceChecks() {
       {isLoading && <p className="text-sm text-muted-foreground">Running checks…</p>}
       {isError && <p className="text-sm text-destructive">Failed to load portfolios.</p>}
 
-      <ul className="divide-y divide-border rounded-lg border border-border bg-card">
+      <Card className="divide-y divide-border py-0">
         {data?.map((p) => {
           const status = mandateStatus(p.holdingsCount);
           const isSelected = selected?.id === p.id;
           return (
-            <li
+            <div
               key={p.id}
               className={cn(
                 "flex items-center justify-between p-4",
@@ -47,20 +47,13 @@ export function ComplianceChecks() {
                   {p.holdingsCount} holdings · {p.strategy}
                 </p>
               </div>
-              <span
-                className={cn(
-                  "rounded-full px-2.5 py-0.5 text-xs font-medium",
-                  status.ok
-                    ? "bg-secondary text-secondary-foreground"
-                    : "bg-destructive/10 text-destructive",
-                )}
-              >
+              <Badge variant={status.ok ? "secondary" : "destructive"}>
                 {status.label}
-              </span>
-            </li>
+              </Badge>
+            </div>
           );
         })}
-      </ul>
+      </Card>
     </section>
   );
 }

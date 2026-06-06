@@ -27,8 +27,9 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 3. Read data only through SDK hooks (TanStack Query). Never call HTTP or another Function directly.
 4. Read/write shared state only through the Context Bus.
 5. Consume UI from `@aegis/platform-ui` (shadcn). Do not install shadcn or Tailwind locally.
-6. Add a co-located `README.md` (Purpose · Public surface · Context consumed/emitted · SDK dependencies · Status).
-7. Add/extend unit tests (Vitest).
+6. **Design pass (not optional):** build the UI from `@aegis/platform-ui` components (Card, Badge, Select, Table, …) per [docs/DESIGN.md](./docs/DESIGN.md) — no raw markup where a component exists. If a needed component is missing, add it to `@aegis/platform-ui` (DESIGN.md), don't hand-roll it. Match a shadcn block layout where applicable.
+7. Add a co-located `README.md` (Purpose · Public surface · Context consumed/emitted · SDK dependencies · UI components used · Status).
+8. Add/extend unit tests (Vitest).
 
 ## Adding an SDK
 
@@ -44,8 +45,12 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 
 ## Styling
 
-- One shared UI package (`@aegis/platform-ui`) owns shadcn/ui + the Tailwind v4 preset. Tailwind v4 is CSS-first (`@import "tailwindcss"`, `@theme`).
-- Guard against cross-package purging: ensure the consuming app `@source`s `packages/ui` (the #1 Tailwind-v4-in-monorepo failure mode — verify visually).
+See **[docs/DESIGN.md](./docs/DESIGN.md)** for the full design system. The rules in brief:
+- One shared UI package (`@aegis/platform-ui`) owns shadcn/ui (new-york, neutral) + the Tailwind v4 preset + the dark theme. Tailwind v4 is CSS-first (`@import "tailwindcss"`, `@theme`).
+- **Component-first: no raw markup where a component exists.** Add missing components to `@aegis/platform-ui` (never locally) and re-export them from its barrel `src/index.ts`.
+- Use semantic theme tokens (`bg-card`, `text-muted-foreground`), never hard-coded colors, so light/dark work.
+- Guard against cross-package purging: the app `@source`s `packages/platform-ui/src` and `packages/functions` (the #1 Tailwind-v4-in-monorepo failure mode — verify in the built CSS / visually).
+- Keep test-stable roles: nav links stay `<a>` (`SidebarMenuButton asChild` + `Link`), persona is a `Select` labelled "Persona", selectable cards stay `<button>`.
 
 ## Citizen-Developer guardrail
 

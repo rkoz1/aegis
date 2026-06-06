@@ -8,4 +8,6 @@
 
 **SDK dependencies** — `@aegis/sdk-portfolios` (`usePortfolios`) — reused, not duplicated.
 
+**UI components** — `@aegis/platform-ui`: Card, Badge (status), cn.
+
 **Status** — live (minimal).

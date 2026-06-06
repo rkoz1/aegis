@@ -42,25 +42,22 @@ export function WorkspaceBar() {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 px-2">
       <span className="text-xs font-medium text-muted-foreground">Workspaces</span>
       <div className="space-y-1">
         {workspaces.length === 0 && (
           <p className="text-xs text-muted-foreground">None saved</p>
         )}
         {workspaces.map((w) => (
-          <button
+          <Button
             key={w.id}
-            type="button"
+            variant={w.id === activeId ? "secondary" : "ghost"}
+            size="sm"
             onClick={() => onSwitch(w.id)}
-            className={`block w-full truncate rounded-md px-2 py-1 text-left text-xs ${
-              w.id === activeId
-                ? "bg-accent text-accent-foreground"
-                : "hover:bg-accent/50"
-            }`}
+            className="w-full justify-start truncate text-xs"
           >
             {w.name}
-          </button>
+          </Button>
         ))}
       </div>
       <div className="flex gap-2">

@@ -18,7 +18,9 @@ test("selecting a portfolio updates the global context chip", async ({ page }) =
 
 test("switching persona changes nav visibility", async ({ page }) => {
   await page.goto("/");
-  await page.getByLabel("Persona").selectOption("compliance-officer");
+  // Persona is a shadcn Select (Radix combobox), not a native <select>.
+  await page.getByRole("combobox", { name: "Persona" }).click();
+  await page.getByRole("option", { name: "Compliance Officer" }).click();
   await expect(page.getByRole("link", { name: "Compliance Checks" })).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Portfolio Snapshot" }),

@@ -1,10 +1,10 @@
 import type { FunctionManifest } from "@aegis/platform-registry";
 import { useSession } from "@aegis/platform-session";
+import { Card, CardDescription, CardHeader, CardTitle } from "@aegis/platform-ui";
 
 /**
  * Wraps a mounted Function with a visibility check, so a Function hidden from
- * the active Persona is not reachable by direct URL — Role visibility, not just
- * a filtered nav.
+ * the active Persona is not reachable by direct URL.
  */
 export function Guarded({ manifest }: { manifest: FunctionManifest }) {
   const activePersona = useSession((s) => s.activePersona);
@@ -14,12 +14,14 @@ export function Guarded({ manifest }: { manifest: FunctionManifest }) {
 
   if (!visible) {
     return (
-      <div className="rounded-lg border border-border bg-card p-6 text-card-foreground">
-        <h1 className="text-lg font-semibold">Access restricted</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          “{manifest.label}” isn’t available to the current persona.
-        </p>
-      </div>
+      <Card className="max-w-md">
+        <CardHeader>
+          <CardTitle>Access restricted</CardTitle>
+          <CardDescription>
+            “{manifest.label}” isn’t available to the current persona.
+          </CardDescription>
+        </CardHeader>
+      </Card>
     );
   }
 

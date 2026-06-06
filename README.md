@@ -11,6 +11,7 @@ The platform's organising spine is the **Investment Lifecycle** — front-to-bac
 | [CONTEXT.md](./CONTEXT.md) | The glossary — the platform's ubiquitous language. Read this first. |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | The map — package taxonomy, layering rules, topology. |
 | [CONVENTIONS.md](./CONVENTIONS.md) | How we build — naming, dependency rules, the citizen-dev guardrail. |
+| [docs/DESIGN.md](./docs/DESIGN.md) | The design system — component-first UI, theme tokens, dark mode. |
 | [docs/adr/](./docs/adr) | The hard-to-reverse decisions and why we made them. |
 | [docs/PHASES.md](./docs/PHASES.md) | The tracer-bullet build plan (V1). |
 

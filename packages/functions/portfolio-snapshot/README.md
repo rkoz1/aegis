@@ -8,4 +8,6 @@
 
 **SDK dependencies** — `@aegis/sdk-portfolios` (`usePortfolios`).
 
+**UI components** — `@aegis/platform-ui`: Badge, Skeleton, cn (selectable cards as styled `<button>`s).
+
 **Status** — live (minimal; representative Function for the spine).

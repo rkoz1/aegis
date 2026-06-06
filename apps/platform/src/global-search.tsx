@@ -1,8 +1,16 @@
 import { useState } from "react";
+import { Search } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { groupResults, type SearchResult } from "@aegis/platform-search";
 import { useSession } from "@aegis/platform-session";
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  Input,
+} from "@aegis/platform-ui";
 
 import { registry } from "./registry";
 import { searchAggregator } from "./search";
@@ -46,40 +54,45 @@ export function GlobalSearch() {
 
   return (
     <div className="relative w-full max-w-md">
-      <input
+      <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <Input
         type="search"
         value={query}
         placeholder="Search applications, functions, entities…"
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setOpen(true)}
         onBlur={() => window.setTimeout(() => setOpen(false), 150)}
-        className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="pl-8"
       />
 
       {showDropdown && (
-        <div className="absolute z-10 mt-1 w-full rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md">
-          {groups.length === 0 && (
-            <p className="px-2 py-3 text-sm text-muted-foreground">No results.</p>
-          )}
-          {groups.map((group) => (
-            <div key={group.category} className="py-1">
-              <p className="px-2 py-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                {group.category}
-              </p>
-              {group.results.map((r) => (
-                <button
-                  key={r.id}
-                  type="button"
-                  // onMouseDown (not onClick) fires before the input's onBlur.
-                  onMouseDown={() => go(r)}
-                  className="flex w-full items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
-                >
-                  <span>{r.label}</span>
-                  <span className="text-xs text-muted-foreground">{r.kind}</span>
-                </button>
+        <div
+          // Keep input focus when clicking a result so navigation fires.
+          onMouseDown={(e) => e.preventDefault()}
+          className="absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-border bg-popover shadow-md"
+        >
+          <Command shouldFilter={false}>
+            <CommandList>
+              {groups.length === 0 && (
+                <p className="px-3 py-4 text-sm text-muted-foreground">No results.</p>
+              )}
+              {groups.map((group) => (
+                <CommandGroup key={group.category} heading={group.category}>
+                  {group.results.map((r) => (
+                    <CommandItem
+                      key={r.id}
+                      value={r.id}
+                      onSelect={() => go(r)}
+                      className="justify-between"
+                    >
+                      <span>{r.label}</span>
+                      <span className="text-xs text-muted-foreground">{r.kind}</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
               ))}
-            </div>
-          ))}
+            </CommandList>
+          </Command>
         </div>
       )}
     </div>
