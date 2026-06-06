@@ -16,5 +16,7 @@ export * from "./components/sheet";
 export * from "./components/sidebar";
 export * from "./components/skeleton";
 export * from "./components/tooltip";
+export * from "./components/table";
+export * from "./components/stat";
 export * from "./components/theme";
 export { cn } from "./lib/utils";

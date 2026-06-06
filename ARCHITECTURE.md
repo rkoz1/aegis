@@ -56,6 +56,9 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 - **Discovery** — each Function/Application exports a typed **Manifest**; the **Registry** aggregates them and drives Global Search, Role visibility, and routing. The **Navigation Taxonomy** is curated separately to read as the Investment Lifecycle (front-to-back office).
 - **Search** — **Global Search** federates **Search Providers** (Registry for Apps/Functions, one per SDK for Entities), filtered by Role and ranked by Context, with a routing/ranking layer for relevance.
 - **Actions** — assigned, status-tracked, Context-carrying deep-links into a target Function. The platform renders/resolves Actions; it is not a workflow engine.
+- **Command palette & keyboard** — desktop keyboard-first navigation: `⌘K`/`Ctrl+K` (or `/`) command palette (go-to + entity search), `g` leader keys with which-key hints, `?` shortcuts overlay, table arrow-key navigation, and row-click-selects-by-default. Implemented in `apps/platform/src/power-nav.tsx`; principles in [docs/DESIGN.md](./docs/DESIGN.md).
+- **Theme** — dark-first (trading-terminal default) with a light mode; `ThemeProvider` + `ThemeToggle` in `@aegis/platform-ui` toggle the `.dark` class and persist to `localStorage`.
+- **UI & layout** — one shared `@aegis/platform-ui` (shadcn + the terminal token system) with finance primitives (`Stat` KPI, `Change` gain/loss) and a dense `Table`. The look is defined in [docs/DESIGN.md](./docs/DESIGN.md); the responsive app skeleton (sidebar/top bar/context bar/right rail; mobile drawer) in [docs/DESIGN-LAYOUT.md](./docs/DESIGN-LAYOUT.md).
 
 ## State management split
 

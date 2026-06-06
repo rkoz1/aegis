@@ -1,60 +1,144 @@
 # Aegis Design System
 
-How Aegis looks and how to keep it looking consistent. Design is a **first-class build
-step**, not an afterthought — every Function and shell surface is built from the shared
-component library, never hand-rolled markup. See [CONVENTIONS.md](../CONVENTIONS.md) for where
-this fits in the build process and [ADR 0003](./adr/0003-locked-stack-version-matrix.md) for the
-stack.
+The canonical design system. **LLMs and Citizen Developers must build to this doc.** It defines
+the *ethos and specifics* (look, color, type, components). The *skeleton* (where the sidebar,
+top bar, nav and panels live, and how they respond) is defined separately in
+[DESIGN-LAYOUT.md](./DESIGN-LAYOUT.md) — read both.
 
-## The rules
+Design is a **first-class build step**, not an afterthought: every surface is built from the
+shared `@aegis/platform-ui` components, never hand-rolled markup. Stack: [ADR 0003](./adr/0003-locked-stack-version-matrix.md).
 
-1. **Component-first — no raw markup where a component exists.** If a shadcn primitive covers it
-   (Button, Card, Badge, Select, Input, DropdownMenu, Command, Popover, Tooltip, Avatar, Sidebar,
-   …), use it. Raw `<div>`/`<span>` with Tailwind is only for layout and spacing.
-2. **One UI package.** All components live in `@aegis/platform-ui`. Never add a component locally
-   in a Function or the app — add it to `@aegis/platform-ui` so every surface shares it.
-3. **Barrel exports.** Every component is re-exported from `packages/platform-ui/src/index.ts`;
-   consumers import from `@aegis/platform-ui` (the barrel), not subpaths.
-4. **Layout from shadcn blocks.** Use the [shadcn blocks](https://ui.shadcn.com/blocks) as the
-   layout vocabulary. The shell follows the **sidebar-07** pattern (collapsible-to-icon sidebar +
-   inset content).
+> The Stitch mockups in [`docs/design-base/`](./design-base) are **visual inspiration** for the
+> components and feel. Their *layout placement is inconsistent* across screens — defer to
+> DESIGN-LAYOUT.md for skeleton, not the screenshots.
 
-## Theme tokens
+## Brand & ethos
 
-Defined once in `packages/platform-ui/src/styles/globals.css`:
-- OKLCH color tokens for **light** (`:root`) and **dark** (`.dark`) — `background`, `foreground`,
-  `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`, `input`,
-  `ring`, plus `sidebar-*` tokens.
-- `@theme inline` maps them to Tailwind utilities (`bg-primary`, `text-muted-foreground`, …).
-- Style: **new-york**, base color **neutral**, icons **lucide-react**.
+A **wealth platform with a trading-terminal sensibility** — Bloomberg-terminal efficiency with
+modern polish. Personality: **authoritative, precise, utilitarian**. Style: *Modern
+Professionalism* + *Systematic Functionalism* — information density over decoration, a
+compact grid-locked interface where every pixel is functional, refined with subtle borders and
+high-legibility type to reduce cognitive load during long monitoring sessions.
 
-Use the semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`), never hard-coded
-colors — that's what makes light/dark and future re-theming work.
+## Color
 
-## Dark mode
+Dark-first (default). Tokens live once in `packages/platform-ui/src/styles/globals.css`; use the
+semantic Tailwind utilities (`bg-card`, `text-muted-foreground`, `text-gain`), never hard-coded
+colors.
 
-`ThemeProvider` + `ThemeToggle` (in `@aegis/platform-ui`) toggle the `.dark` class on
-`documentElement` and persist to `localStorage`. `apps/platform/index.html` sets the class before
-mount to avoid a flash. The toggle lives in the shell header.
+**Dark (primary) palette:**
 
-## Adding a component to `@aegis/platform-ui`
+| Token | Value | Use |
+|---|---|---|
+| `background` | `#150c06` | App canvas (deep warm charcoal) |
+| `card` | `#1f160d` | Panels / modules (Level 1) |
+| `popover` | `#271e15` | Dropdowns / dialogs (Level 2), 1px border |
+| `foreground` | `#f2dfd1` | Primary text (warm off-white) |
+| `muted-foreground` | `#a38d7a` | Labels, secondary text |
+| `primary` | `#ff9500` | **Bloomberg amber** — primary actions, active nav, focus, brand |
+| `primary-foreground` | `#2d1600` | Text on amber |
+| `secondary` | `#32281f` | Secondary surfaces / ghost-button bg |
+| `accent` | `#32281f` | Hover surfaces (kept neutral so hovers stay quiet) |
+| `info` | `#8ad3ff` | **Cyan** — market prices, links, tickers (tertiary) |
+| `gain` | `#4ade80` | P&L up / positive |
+| `loss` / `destructive` | `#ff5d5d` | P&L down / negative / errors |
+| `warning` | `#ffbd7f` | Soft amber for non-critical attention |
+| `border` / `input` | `#554334` | 1px dividers, input borders |
+| `ring` | `#ff9500` | Focus ring (amber) |
 
-1. From `packages/platform-ui`: `pnpm dlx shadcn@latest add <name>` (components.json is configured:
-   new-york, neutral, aliases to `@aegis/platform-ui/*`). Use `--overwrite` to skip prompts.
-2. **Verify** the generated file: imports are `@aegis/platform-ui/...` (not `@/...`), it lands in
-   `src/components/<name>.tsx`, and any new CSS tokens merged cleanly into `globals.css`.
-3. **Re-export** its public surface from `src/index.ts` (`export * from "./components/<name>"`).
-4. If it adds a hook under `src/hooks/`, the `./hooks/*` export in `package.json` already covers it.
-5. If a consumer (app/Function) imports an icon directly, add `lucide-react` to that package's deps.
-6. Run `pnpm check-types && pnpm build`, then **verify the classes survive** Tailwind v4's
-   cross-package scan (ADR 0003): grep the built CSS or check visually. The app's `index.css`
-   `@source`s `packages/platform-ui/src` and `packages/functions` — keep those.
+Amber is used **sparingly** — primary actions, active state, focus, alerts — for instant
+hierarchy. Greens/reds are reserved for market signals (P&L). Cyan marks live market data.
+A warm light palette exists for completeness but the product is dark-first.
 
-## Accessibility / test-stability notes
+## Typography
 
-- Nav links use `SidebarMenuButton asChild` wrapping a TanStack `<Link>` so they stay real `<a>`
-  elements (role `link`).
-- The persona control is a `Select` with `aria-label="Persona"` (role `combobox`).
-- Selectable cards (e.g. portfolio cards) stay `<button>` elements with their label as the
-  accessible name.
-Keep these stable — the Playwright smoke specs depend on them.
+Dual-font strategy (self-hosted via `@fontsource-variable`, set as `--font-sans` / `--font-mono`):
+
+- **Inter** — all UI: navigation, labels, prose.
+- **JetBrains Mono** — **all numbers**: prices, tickers, P&L, quantities. Monospaced + tabular
+  figures so columns align for vertical scanning (`.font-mono` enables tabular nums globally).
+
+Scale (apply with Tailwind text utilities):
+
+| Role | Font | Size / weight | Use |
+|---|---|---|---|
+| display | Inter | 24px / 600, tight | Page titles |
+| headline | Inter | 18px / 600 | Section / panel titles |
+| body-lg | Inter | 14px / 400 | Default body |
+| body-sm | Inter | 12px / 400 | Dense body |
+| data-lg | JetBrains Mono | 14px / 500 | Primary numeric data |
+| data-sm | JetBrains Mono | 12px / 500 | **Table cells (default — max density)** |
+| label-xs | Inter | 10px / 700, uppercase, +letter-spacing | Table headers, metadata |
+
+Rules: `data-sm` for most table content; `label-xs` for headers/descriptors; high contrast for
+primary data, muted grays for labels.
+
+## Layout & spacing (density)
+
+Modular **4px grid**; deliberately tighter than typical web spacing.
+
+- Base unit **4px**; container padding **12px**; component gap **8px** (down to 4px); table row
+  height **~28px** with minimal padding; sidebar **240px**.
+- Tables are the primary layout engine — compact rows, sticky headers, 1px column dividers.
+
+## Elevation & shape
+
+- **Tonal layering + 1px low-contrast outlines**, not shadows (flat, fast, terminal feel).
+  L0 `background` → L1 `card` → L2 `popover` (+ 1px `border`). Shadows only for critical modal focus.
+- **Sharp: 0px radius.** Corners are square so components sit flush. (`--radius: 0`; avatars may
+  stay circular.)
+
+## Components
+
+Built on Radix primitives (shadcn) in `@aegis/platform-ui`, styled dense. **Add missing
+components here and re-export from the barrel `src/index.ts`** — never hand-roll or add locally.
+
+Available now: Button, Card, Badge, Input, Select, DropdownMenu, Command, Popover, Dialog,
+Sheet, Tooltip, Avatar, Separator, ScrollArea, Skeleton, Table, Sidebar, plus finance primitives
+**Stat** (KPI) and **Change** (signed gain/loss value), and **ThemeProvider/ThemeToggle**.
+
+Conventions & terminal-specific components to honour/build:
+- **Buttons** — small (24–32px). Primary = amber w/ dark text; secondary = ghost + 1px border.
+- **Inputs** — dark bg, sharp, monochrome border, amber only on focus.
+- **Data Tables** — the core. `label-xs` sticky headers; `data-sm` mono cells; right-align numbers;
+  support **flash** states (row/cell briefly tints gain/loss on value change).
+- **Badges/Chips** — small, rectangular status tags (OPEN, FILLED, REVIEW); low-opacity tint of
+  gain/loss/warning with high-contrast text.
+- **KPI Stat** — label-xs label + mono value; deltas via `Change`.
+- **Command Palette** — central quick nav + ticker search (blurred L2 surface). *(planned)*
+- **Ticker Strip** — horizontal market-index row (SPX/NDX/…) for top-of-page context. *(planned)*
+- **Trade Ticket** — order-entry panel, high-contrast Buy(green)/Sell(red). *(planned)*
+
+## Keyboard & interaction (desktop power users)
+
+The platform is **keyboard-first on desktop** — a power user should be able to navigate and act
+without the mouse, with a **hinting system** that teaches shortcuts in context.
+
+- **Command palette** — `⌘K` / `Ctrl+K` (or `/`) opens a palette to jump to any Function/route and
+  search Entities. The primary fast-navigation surface.
+- **Leader keys with hints (which-key)** — pressing a leader (`g` = "go to") shows a transient
+  **hint overlay** of the next keys (`g h` Home, `g l` Lifecycle, `g 1–9` nth function). The hint is
+  the teaching mechanism: press the prefix, see what's available.
+- **Shortcuts overlay** — `?` opens the full cheatsheet. `Esc` cancels/closes.
+- **Table navigation** — data tables are focusable; `↑` / `↓` move a row cursor and select as they
+  go; `Enter` (or a click) confirms.
+- **Row click selects by default** — clicking a table row selects that Entity (emits it on the
+  Context Bus) unless a Function explicitly opts a row out (e.g. rows with their own primary action).
+- Shortcuts are suppressed while typing in inputs/textareas.
+- Implementation: `apps/platform/src/power-nav.tsx` (palette, leader hints, `?`); tables wire
+  `tabIndex` + an arrow-key handler (see `portfolio-snapshot`). New Functions should make their
+  primary list/table rows selectable and, where useful, register go-to/command entries.
+
+## Test-stable roles
+
+Keep accessible roles stable (Playwright depends on them): nav links stay `<a>`
+(`SidebarMenuButton asChild` + `Link`); persona is a `Select` labelled "Persona"; selectable
+table rows expose a `<button>` with the row's name.
+
+## Adding a component
+
+1. From `packages/platform-ui`: `pnpm dlx shadcn@latest add <name> --overwrite`.
+2. Verify imports are `@aegis/platform-ui/...` and tokens merged into `globals.css`.
+3. Re-export from `src/index.ts`; if it adds a hook, the `./hooks/*` export covers it.
+4. `pnpm check-types && pnpm build`; confirm classes survive Tailwind v4's cross-package scan
+   (the app `@source`s `packages/platform-ui/src` + `packages/functions`).

@@ -15,6 +15,8 @@ export const PortfolioSchema = z.object({
   baseCurrency: CurrencyCodeSchema,
   marketValue: MoneySchema,
   holdingsCount: z.number().int().nonnegative(),
+  /** Mock day change in percent (for P&L display). */
+  dayChangePct: z.number(),
 });
 
 export type Portfolio = z.infer<typeof PortfolioSchema>;

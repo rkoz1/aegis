@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Market Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#3e3329",
+                        "surface-bright": "#42372d",
+                        "inverse-primary": "#8c5000",
+                        "surface-container-low": "#231a11",
+                        "secondary-fixed": "#e1e3e5",
+                        "tertiary-container": "#00bbfe",
+                        "primary-fixed": "#ffdcbf",
+                        "primary": "#ffbd7f",
+                        "surface-container-lowest": "#150c06",
+                        "on-tertiary-fixed-variant": "#004c6a",
+                        "inverse-surface": "#f2dfd1",
+                        "on-primary-fixed-variant": "#6a3b00",
+                        "on-secondary": "#2e3133",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#ffb874",
+                        "surface-container-highest": "#3e3329",
+                        "secondary": "#c5c7c9",
+                        "primary-container": "#ff9500",
+                        "error-container": "#93000a",
+                        "surface": "#1a120a",
+                        "surface-dim": "#1a120a",
+                        "on-surface-variant": "#dbc2ad",
+                        "surface-container": "#271e15",
+                        "on-error": "#690005",
+                        "secondary-container": "#444749",
+                        "on-background": "#f2dfd1",
+                        "tertiary": "#8ad3ff",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-primary-container": "#643700",
+                        "outline-variant": "#554334",
+                        "on-tertiary": "#00344a",
+                        "inverse-on-surface": "#392e25",
+                        "on-primary-fixed": "#2d1600",
+                        "secondary-fixed-dim": "#c5c7c9",
+                        "background": "#1a120a",
+                        "on-surface": "#f2dfd1",
+                        "outline": "#a38d7a",
+                        "primary-fixed-dim": "#ffb874",
+                        "on-tertiary-container": "#004764",
+                        "on-primary": "#4b2800",
+                        "on-secondary-container": "#b3b5b8",
+                        "tertiary-fixed-dim": "#7fd0ff",
+                        "surface-container-high": "#32281f",
+                        "on-secondary-fixed-variant": "#444749",
+                        "tertiary-fixed": "#c5e7ff",
+                        "on-tertiary-fixed": "#001e2d",
+                        "error": "#ffb4ab",
+                        "up": "#4ade80",
+                        "down": "#f87171"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "4px",
+                        "container-padding": "12px",
+                        "table-row-height": "28px",
+                        "sidebar-width": "240px",
+                        "component-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "label-xs": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display": ["Inter"],
+                        "data-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline": ["Inter"],
+                        "data-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "label-xs": ["10px", {"lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-lg": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "data-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "data-lg": ["14px", {"lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .flash-up { animation: flashGreen 1s ease-out; }
+        .flash-down { animation: flashRed 1s ease-out; }
+        @keyframes flashGreen { 0% { background-color: rgba(74, 222, 128, 0.3); } 100% { background-color: transparent; } }
+        @keyframes flashRed { 0% { background-color: rgba(248, 113, 113, 0.3); } 100% { background-color: transparent; } }
+        
+        .ticker-wrap {
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        .ticker-move {
+            display: inline-block;
+            animation: ticker 40s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        
+        /* Custom scrollbar for high-density look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: theme('colors.surface-container-low'); }
+        ::-webkit-scrollbar-thumb { background: theme('colors.outline-variant'); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.outline'); }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col font-body-sm text-body-sm antialiased">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-lowest flex justify-between items-center h-unit*8 px-container-padding w-full z-50 border-b border-outline-variant shrink-0">
+<div class="flex items-center gap-4">
+<span class="font-display text-display font-black text-primary tracking-tighter">TERMINAL</span>
+</div>
+<!-- Indices Ticker -->
+<div class="flex-1 mx-8 overflow-hidden h-full flex items-center bg-surface-container border border-outline-variant rounded">
+<div class="ticker-wrap w-full flex items-center">
+<div class="ticker-move flex items-center gap-8 font-data-sm text-data-sm">
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">SPX</span><span class="text-on-surface">5,123.45</span><span class="text-up">+0.5%</span></div>
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">NDX</span><span class="text-on-surface">18,034.12</span><span class="text-up">+0.8%</span></div>
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">RUT</span><span class="text-on-surface">2,045.67</span><span class="text-down">-0.2%</span></div>
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">NKY</span><span class="text-on-surface">39,234.00</span><span class="text-up">+1.1%</span></div>
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">VIX</span><span class="text-on-surface">14.25</span><span class="text-down">-2.3%</span></div>
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">US10Y</span><span class="text-on-surface">4.21%</span><span class="text-up">+0.02</span></div>
+<!-- Repeat for seamless scroll -->
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">SPX</span><span class="text-on-surface">5,123.45</span><span class="text-up">+0.5%</span></div>
+<div class="flex items-center gap-2"><span class="text-on-surface-variant">NDX</span><span class="text-on-surface">18,034.12</span><span class="text-up">+0.8%</span></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-primary">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed transition-colors text-[20px]">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed transition-colors text-[20px]">wifi_tethering</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed transition-colors text-[20px]">account_circle</span>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low flex flex-col h-full w-sidebar-width shrink-0 border-r border-outline-variant pt-unit*8 pb-unit*2">
+<nav class="flex-1 flex flex-col gap-1 mt-4">
+<a class="text-on-surface-variant hover:text-on-surface flex items-center gap-component-gap px-container-padding py-1 hover:bg-surface-variant transition-colors duration-100 cursor-pointer select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard_customize</span>
+<span class="font-label-xs text-label-xs">Command Center</span>
+</a>
+<a class="text-on-primary-fixed bg-primary-container font-bold flex items-center gap-component-gap px-container-padding py-1 cursor-default select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">equalizer</span>
+<span class="font-label-xs text-label-xs">Trade Desk</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface flex items-center gap-component-gap px-container-padding py-1 hover:bg-surface-variant transition-colors duration-100 cursor-pointer select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">rss_feed</span>
+<span class="font-label-xs text-label-xs">News Wire</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface flex items-center gap-component-gap px-container-padding py-1 hover:bg-surface-variant transition-colors duration-100 cursor-pointer select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">security</span>
+<span class="font-label-xs text-label-xs">Risk Monitor</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface flex items-center gap-component-gap px-container-padding py-1 hover:bg-surface-variant transition-colors duration-100 cursor-pointer select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-label-xs text-label-xs">Settings</span>
+</a>
+</nav>
+<div class="px-container-padding mt-auto mb-4">
+<button class="w-full bg-primary text-on-primary font-label-xs text-label-xs py-2 rounded flex justify-center items-center gap-2 hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    New Order
+                </button>
+</div>
+<div class="border-t border-outline-variant pt-2 flex flex-col gap-1">
+<a class="text-on-surface-variant hover:text-on-surface flex items-center gap-component-gap px-container-padding py-1 hover:bg-surface-variant transition-colors duration-100 cursor-pointer select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span class="font-label-xs text-label-xs">Help</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface flex items-center gap-component-gap px-container-padding py-1 hover:bg-surface-variant transition-colors duration-100 cursor-pointer select-none" href="#">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span class="font-label-xs text-label-xs">Logout</span>
+</a>
+</div>
+<div class="mt-4 px-container-padding flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-sm text-data-sm text-on-surface">System Operator</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Institutional Grade</span>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 bg-surface flex flex-col p-container-padding gap-container-padding overflow-hidden">
+<!-- Workspace Header -->
+<div class="flex justify-between items-end border-b border-outline-variant pb-2 shrink-0">
+<div class="flex flex-col gap-1">
+<span class="font-label-xs text-label-xs text-primary uppercase">Active Workspace</span>
+<h1 class="font-headline text-headline text-on-surface m-0">Equities Watchlist: Tech Giants</h1>
+</div>
+<div class="flex gap-2">
+<div class="bg-surface-container-highest border border-outline-variant rounded px-2 py-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">search</span>
+<input class="bg-transparent border-none text-data-sm font-data-sm text-on-surface focus:ring-0 p-0 w-32 placeholder:text-on-surface-variant" placeholder="Add Ticker..." type="text"/>
+</div>
+<button class="bg-surface-container-highest border border-outline-variant rounded px-2 py-1 flex items-center gap-1 hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined text-[16px]">filter_list</span>
+<span class="font-label-xs text-label-xs">Filter</span>
+</button>
+<button class="bg-surface-container-highest border border-outline-variant rounded px-2 py-1 flex items-center gap-1 hover:bg-surface-variant transition-colors text-on-surface">
+<span class="material-symbols-outlined text-[16px]">view_column</span>
+<span class="font-label-xs text-label-xs">Columns</span>
+</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="flex-1 bg-surface-container-low border border-outline-variant rounded flex flex-col overflow-hidden">
+<!-- Table Header -->
+<div class="flex bg-surface-container border-b border-outline-variant font-label-xs text-label-xs text-on-surface-variant shrink-0">
+<div class="w-10 px-2 py-1 flex items-center justify-center border-r border-outline-variant">#</div>
+<div class="w-24 px-2 py-1 flex items-center border-r border-outline-variant">TICKER</div>
+<div class="w-48 px-2 py-1 flex items-center border-r border-outline-variant">NAME</div>
+<div class="w-24 px-2 py-1 flex items-center justify-end border-r border-outline-variant">LAST</div>
+<div class="w-24 px-2 py-1 flex items-center justify-end border-r border-outline-variant">CHG</div>
+<div class="w-24 px-2 py-1 flex items-center justify-end border-r border-outline-variant">CHG %</div>
+<div class="w-32 px-2 py-1 flex items-center justify-end border-r border-outline-variant">VOLUME</div>
+<div class="w-32 px-2 py-1 flex items-center justify-end border-r border-outline-variant">MARKET CAP</div>
+<div class="flex-1 px-2 py-1 flex items-center justify-center">TREND (1D)</div>
+</div>
+<!-- Table Body -->
+<div class="flex-1 overflow-y-auto font-data-sm text-data-sm text-on-surface">
+<!-- Row 1 -->
+<div class="flex border-b border-outline-variant hover:bg-surface-variant transition-colors h-table-row-height group cursor-pointer">
+<div class="w-10 px-2 flex items-center justify-center border-r border-outline-variant text-on-surface-variant">1</div>
+<div class="w-24 px-2 flex items-center border-r border-outline-variant font-bold text-primary">AAPL</div>
+<div class="w-48 px-2 flex items-center border-r border-outline-variant truncate">Apple Inc.</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant flash-up">178.25</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-up">+1.45</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-up bg-up/10">+0.82%</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">45.2M</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">2.75T</div>
+<div class="flex-1 px-2 flex items-center justify-center relative">
+<!-- Placeholder for sparkline -->
+<div class="w-full h-4 bg-gradient-to-r from-transparent via-up/20 to-transparent border-b border-up"></div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex border-b border-outline-variant hover:bg-surface-variant transition-colors h-table-row-height group cursor-pointer">
+<div class="w-10 px-2 flex items-center justify-center border-r border-outline-variant text-on-surface-variant">2</div>
+<div class="w-24 px-2 flex items-center border-r border-outline-variant font-bold text-primary">MSFT</div>
+<div class="w-48 px-2 flex items-center border-r border-outline-variant truncate">Microsoft Corp.</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant flash-down">415.60</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-down">-2.10</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-down bg-down/10">-0.50%</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">22.1M</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">3.05T</div>
+<div class="flex-1 px-2 flex items-center justify-center relative">
+<div class="w-full h-4 bg-gradient-to-r from-transparent via-down/20 to-transparent border-b border-down"></div>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex border-b border-outline-variant hover:bg-surface-variant transition-colors h-table-row-height group cursor-pointer">
+<div class="w-10 px-2 flex items-center justify-center border-r border-outline-variant text-on-surface-variant">3</div>
+<div class="w-24 px-2 flex items-center border-r border-outline-variant font-bold text-primary">NVDA</div>
+<div class="w-48 px-2 flex items-center border-r border-outline-variant truncate">NVIDIA Corp.</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant flash-up">875.40</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-up">+15.20</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-up bg-up/10">+1.77%</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">65.8M</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">2.18T</div>
+<div class="flex-1 px-2 flex items-center justify-center relative">
+<div class="w-full h-4 bg-gradient-to-r from-transparent via-up/20 to-transparent border-b border-up"></div>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="flex border-b border-outline-variant hover:bg-surface-variant transition-colors h-table-row-height group cursor-pointer">
+<div class="w-10 px-2 flex items-center justify-center border-r border-outline-variant text-on-surface-variant">4</div>
+<div class="w-24 px-2 flex items-center border-r border-outline-variant font-bold text-primary">GOOGL</div>
+<div class="w-48 px-2 flex items-center border-r border-outline-variant truncate">Alphabet Inc.</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant">145.22</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-on-surface-variant">0.00</div>
+<div class="w-24 px-2 flex items-center justify-end border-r border-outline-variant text-on-surface-variant bg-surface-variant">0.00%</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">18.5M</div>
+<div class="w-32 px-2 flex items-center justify-end border-r border-outline-variant">1.82T</div>
+<div class="flex-1 px-2 flex items-center justify-center relative">
+<div class="w-full h-4 bg-gradient-to-r from-transparent via-outline-variant/20 to-transparent border-b border-outline-variant"></div>
+</div>
+</div>
+<!-- Fill empty rows to bottom -->
+<div class="flex border-b border-outline-variant h-table-row-height">
+<div class="w-10 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-48 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-32 border-r border-outline-variant"></div><div class="w-32 border-r border-outline-variant"></div><div class="flex-1"></div>
+</div>
+<div class="flex border-b border-outline-variant h-table-row-height">
+<div class="w-10 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-48 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-32 border-r border-outline-variant"></div><div class="w-32 border-r border-outline-variant"></div><div class="flex-1"></div>
+</div>
+<div class="flex border-b border-outline-variant h-table-row-height">
+<div class="w-10 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-48 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-24 border-r border-outline-variant"></div><div class="w-32 border-r border-outline-variant"></div><div class="w-32 border-r border-outline-variant"></div><div class="flex-1"></div>
+</div>
+</div>
+<!-- Table Footer/Status -->
+<div class="flex justify-between items-center bg-surface-container px-2 py-1 border-t border-outline-variant font-label-xs text-label-xs text-on-surface-variant shrink-0">
+<div>MARKET OPEN</div>
+<div>DATA: REAL-TIME (CBOE)</div>
+</div>
+</div>
+<!-- Bottom Panel: Quick Chart & Order Entry -->
+<div class="h-64 flex gap-container-padding shrink-0">
+<!-- Selected Ticker Chart -->
+<div class="flex-1 bg-surface-container-low border border-outline-variant rounded flex flex-col overflow-hidden">
+<div class="flex justify-between items-center border-b border-outline-variant px-2 py-1 shrink-0">
+<div class="flex items-baseline gap-2">
+<span class="font-data-lg text-data-lg font-bold text-primary">AAPL</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">1D Chart</span>
+</div>
+<div class="flex gap-1 font-label-xs text-label-xs">
+<button class="px-2 py-0.5 rounded hover:bg-surface-variant text-on-surface-variant">1D</button>
+<button class="px-2 py-0.5 rounded bg-surface-variant text-on-surface">1W</button>
+<button class="px-2 py-0.5 rounded hover:bg-surface-variant text-on-surface-variant">1M</button>
+<button class="px-2 py-0.5 rounded hover:bg-surface-variant text-on-surface-variant">YTD</button>
+</div>
+</div>
+<div class="flex-1 relative p-4 flex items-end">
+<!-- Abstract Chart Representation -->
+<div class="w-full h-full border-b border-l border-outline-variant relative">
+<!-- Grid lines -->
+<div class="absolute w-full h-px bg-outline-variant/30 top-1/4"></div>
+<div class="absolute w-full h-px bg-outline-variant/30 top-2/4"></div>
+<div class="absolute w-full h-px bg-outline-variant/30 top-3/4"></div>
+<!-- Fake Line Chart -->
+<svg class="absolute inset-0 h-full w-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<polyline fill="none" points="0,80 10,75 20,85 30,60 40,65 50,40 60,45 70,20 80,30 90,10 100,5" stroke="theme('colors.up')" stroke-width="2"></polyline>
+</svg>
+</div>
+</div>
+</div>
+<!-- Order Ticket -->
+<div class="w-80 bg-surface-container-low border border-outline-variant rounded flex flex-col overflow-hidden">
+<div class="bg-surface-container border-b border-outline-variant px-2 py-1 font-label-xs text-label-xs text-on-surface-variant flex justify-between items-center">
+<span>TRADE TICKET</span>
+<span class="text-primary font-bold">AAPL</span>
+</div>
+<div class="p-4 flex flex-col gap-4 flex-1">
+<div class="flex gap-2">
+<button class="flex-1 bg-up/20 text-up border border-up rounded py-1 font-data-sm text-data-sm hover:bg-up/30 transition-colors">BUY</button>
+<button class="flex-1 bg-surface-container-highest text-on-surface-variant border border-outline-variant rounded py-1 font-data-sm text-data-sm hover:bg-surface-variant transition-colors">SELL</button>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<span class="font-label-xs text-label-xs text-on-surface-variant">Quantity</span>
+<input class="w-24 bg-surface-container-highest border border-outline-variant rounded px-2 py-1 text-data-sm font-data-sm text-right text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" type="number" value="100"/>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-xs text-label-xs text-on-surface-variant">Order Type</span>
+<select class="w-24 bg-surface-container-highest border border-outline-variant rounded px-2 py-1 text-data-sm font-data-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary appearance-none">
+<option>LIMIT</option>
+<option>MARKET</option>
+<option>STOP</option>
+</select>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-xs text-label-xs text-on-surface-variant">Limit Price</span>
+<input class="w-24 bg-surface-container-highest border border-outline-variant rounded px-2 py-1 text-data-sm font-data-sm text-right text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" type="text" value="178.20"/>
+</div>
+</div>
+<div class="mt-auto pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-xs text-label-xs text-on-surface-variant">Est. Total</span>
+<span class="font-data-lg text-data-lg text-on-surface">$17,820.00</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-xs text-label-xs py-2 rounded font-bold hover:bg-primary-fixed transition-colors mt-2">
+                            SUBMIT ORDER
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        // Simple script to randomly flash rows to simulate live data
+        setInterval(() => {
+            const rows = document.querySelectorAll('.group');
+            if(rows.length > 0) {
+                const randomRow = rows[Math.floor(Math.random() * (rows.length - 3))]; // Skip empty rows
+                if(randomRow) {
+                    const priceCell = randomRow.children[3];
+                    const isUp = Math.random() > 0.5;
+                    
+                    priceCell.classList.remove('flash-up', 'flash-down');
+                    void priceCell.offsetWidth; // trigger reflow
+                    priceCell.classList.add(isUp ? 'flash-up' : 'flash-down');
+                }
+            }
+        }, 2000);
+    </script>
+</body></html>

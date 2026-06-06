@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { ThemeProvider, TooltipProvider } from "@aegis/platform-ui";
 
+import "@fontsource-variable/inter";
+import "@fontsource-variable/jetbrains-mono";
 import { router } from "./router";
 import "./index.css";
 

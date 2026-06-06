@@ -8,8 +8,8 @@
       // Apply persisted/system theme before mount to avoid a flash.
       (function () {
         try {
-          var t = localStorage.getItem("aegis-theme");
-          if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches)) {
+          // Dark-first: dark unless the user explicitly chose light.
+          if (localStorage.getItem("aegis-theme") !== "light") {
             document.documentElement.classList.add("dark");
           }
         } catch (e) {}

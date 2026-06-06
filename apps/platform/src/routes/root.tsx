@@ -26,6 +26,7 @@ import { GlobalSearch } from "../global-search";
 import { ContextChip } from "../context-chip";
 import { WorkspaceBar } from "../workspace-bar";
 import { ActionsInbox } from "../actions-inbox";
+import { PowerNav } from "../power-nav";
 import { useRestoreFromUrl } from "../use-restore";
 
 const activeLink = {
@@ -52,16 +53,19 @@ export function RootLayout() {
 
   return (
     <SidebarProvider>
+      <PowerNav />
       <Sidebar collapsible="icon">
         <SidebarHeader className="gap-2">
           <div className="flex items-center gap-2 px-1 py-1">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+            <span className="font-mono text-lg font-bold uppercase tracking-widest text-primary group-data-[collapsible=icon]:hidden">
+              Aegis
+            </span>
+            <span className="hidden font-mono text-lg font-bold text-primary group-data-[collapsible=icon]:inline">
               Æ
-            </div>
-            <div className="group-data-[collapsible=icon]:hidden">
-              <p className="text-sm font-semibold leading-none">Aegis</p>
-              <p className="text-xs text-muted-foreground">Wealth Platform</p>
-            </div>
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground group-data-[collapsible=icon]:hidden">
+              Terminal
+            </span>
           </div>
           <div className="group-data-[collapsible=icon]:hidden">
             <PersonaSwitcher />
@@ -124,17 +128,19 @@ export function RootLayout() {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset>
-        <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4">
-          <SidebarTrigger />
+      <SidebarInset className="min-w-0">
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3">
+          <SidebarTrigger className="shrink-0" />
           <GlobalSearch />
-          <div className="ml-auto flex items-center gap-2">
-            <ContextChip />
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+            <div className="hidden sm:block">
+              <ContextChip />
+            </div>
             <ActionsInbox />
             <ThemeToggle />
           </div>
         </header>
-        <main className="flex-1 p-8">
+        <main className="min-w-0 flex-1 overflow-auto p-4">
           <Outlet />
         </main>
       </SidebarInset>

@@ -36,7 +36,7 @@ export function ActionsInbox() {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Bell className="size-4" />
-          Actions
+          <span className="hidden sm:inline">Actions</span>
           {mine.length > 0 && (
             <Badge className="px-1.5">{mine.length}</Badge>
           )}
