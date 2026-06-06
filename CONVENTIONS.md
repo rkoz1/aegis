@@ -18,7 +18,7 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 - **Functions never import other Functions.** Coordinate via the Context Bus only.
 - **Live never imports a Prototype.** Prototypes may import Live units (read-only reuse).
 - Never import upward (a Function must not import an Application or the host shell).
-- Enforcement is mechanical but **kept light early** — do not gold-plate boundary rules before there is code to guard; avoid Turborepo/ESLint/TS-paths enforcement loops.
+- Enforcement is mechanical but **kept light** — a standalone `pnpm check-deps` (`scripts/check-deps.mjs`) validates the layering from each `package.json`. Deliberately *not* ESLint/Turborepo boundary plugins, to avoid tool-interaction loops.
 
 ## Adding a Function
 
@@ -27,8 +27,9 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 3. Read data only through SDK hooks (TanStack Query). Never call HTTP or another Function directly.
 4. Read/write shared state only through the Context Bus.
 5. Consume UI from `@aegis/platform-ui` (shadcn). Do not install shadcn or Tailwind locally.
-6. Add a co-located `README.md` (Purpose · Public surface · Context consumed/emitted · SDK dependencies · Status).
-7. Add/extend unit tests (Vitest).
+6. **Design pass (not optional):** build the UI from `@aegis/platform-ui` components (Card, Badge, Select, Table, …) per [docs/DESIGN.md](./docs/DESIGN.md) — no raw markup where a component exists. If a needed component is missing, add it to `@aegis/platform-ui` (DESIGN.md), don't hand-roll it. Match a shadcn block layout where applicable.
+7. Add a co-located `README.md` (Purpose · Public surface · Context consumed/emitted · SDK dependencies · UI components used · Status).
+8. Add/extend unit tests (Vitest).
 
 ## Adding an SDK
 
@@ -44,8 +45,12 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 
 ## Styling
 
-- One shared UI package (`@aegis/platform-ui`) owns shadcn/ui + the Tailwind v4 preset. Tailwind v4 is CSS-first (`@import "tailwindcss"`, `@theme`).
-- Guard against cross-package purging: ensure the consuming app `@source`s `packages/ui` (the #1 Tailwind-v4-in-monorepo failure mode — verify visually).
+See **[docs/DESIGN.md](./docs/DESIGN.md)** for the full design system. The rules in brief:
+- One shared UI package (`@aegis/platform-ui`) owns shadcn/ui (new-york, neutral) + the Tailwind v4 preset + the dark theme. Tailwind v4 is CSS-first (`@import "tailwindcss"`, `@theme`).
+- **Component-first: no raw markup where a component exists.** Add missing components to `@aegis/platform-ui` (never locally) and re-export them from its barrel `src/index.ts`.
+- Use semantic theme tokens (`bg-card`, `text-muted-foreground`), never hard-coded colors, so light/dark work.
+- Guard against cross-package purging: the app `@source`s `packages/platform-ui/src` and `packages/functions` (the #1 Tailwind-v4-in-monorepo failure mode — verify in the built CSS / visually).
+- Keep test-stable roles: nav links stay `<a>` (`SidebarMenuButton asChild` + `Link`), persona is a `Select` labelled "Persona", selectable cards stay `<button>`.
 
 ## Citizen-Developer guardrail
 
@@ -56,7 +61,9 @@ app  →  application  →  function  →  { sdk, platform, models, core }
 ## Build discipline
 
 - Work in **tracer-bullet phases** ([docs/PHASES.md](./docs/PHASES.md)): every change ends in something a human can click and test. No pure-background phases.
-- Each phase is committed to git (branch + PR). Unit tests grow from Phase 0; e2e (Playwright) lands at Phase 7.
+- Each phase is committed to git (branch + PR). Unit tests (Vitest) grow from Phase 0 and run via `pnpm test`.
+- E2E (Playwright) is scaffolded in `apps/platform` (`pnpm --filter @aegis/platform e2e`); it needs browser binaries (`npx playwright install`) and is intentionally separate from `pnpm test` so unit CI stays green without browsers.
+- Pre-commit gate (also the citizen-dev path): `pnpm check-types && pnpm test && pnpm check-deps && pnpm build`.
 
 ## Documentation
 
