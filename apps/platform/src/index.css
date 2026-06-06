@@ -1,0 +1,10 @@
+@import "@aegis/platform-ui/globals.css";
+
+/*
+ * Tailwind v4 auto-scans only this app (the cwd). Workspace packages live
+ * outside it, so register their sources explicitly or their utility classes get
+ * purged from the build — the #1 Tailwind-v4-in-a-monorepo failure mode.
+ * See ADR 0003.
+ */
+@source "../../../packages/platform-ui/src";
+@source "../../../packages/functions";
